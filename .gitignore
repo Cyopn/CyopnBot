@@ -3,3 +3,4 @@ commands/ww.js
 node_modules
 .env
 mega_databases
+package-lock.json
