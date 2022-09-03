@@ -1,0 +1,41 @@
+{
+  "dependencies": {
+    "@discordjs/voice": "^0.11.0",
+    "@iamtraction/google-translate": "^1.1.2",
+    "amethyste-api": "^1.1.5",
+    "axios": "^0.27.2",
+    "discord-memes": "^1.2.9",
+    "discord-player": "^5.3.1",
+    "discord-tts": "^1.2.2",
+    "discord.js": "^14.2.0",
+    "donutapi": "^0.1.6",
+    "dotenv": "^16.0.1",
+    "lyrics-finder": "^21.7.0",
+    "megadb": "^3.4.0",
+    "node-youtube-music": "^0.7.0",
+    "opusscript": "^0.0.8",
+    "star-labs": "^1.1.2",
+    "ytdl-core": "^4.11.1"
+  },
+  "name": "cyopnbot",
+  "version": "1.0.0",
+  "description": "Un bot de Discord completamente en español",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "index2.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cyopn/CyopnBot.git"
+  },
+  "author": "Cyopn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cyopn/CyopnBot/issues"
+  },
+  "homepage": "https://github.com/Cyopn/CyopnBot#readme"
+}
