@@ -1,20 +1,22 @@
-const Discord = require("discord.js");
-const mm = require("discord-memes")
-module.exports.run = async(client, message, args) => {
-    try {
-        let mem = mm.imagenesEspañol()
-        const embed = new Discord.MessageEmbed()
-            .setTitle("ola")
-            .setDescription(`Pedido por: ${message.author.tag}`)
-            .setImage(mem)
-            .setFooter('CyopnBot')
-            .setTimestamp()
-        message.channel.send(embed)
-    } catch (e) {
-        console.log(e)
-    }
-}
+const { EmbedBuilder } = require("discord.js");
+const { getRed } = require("../lib/functions");
+
+module.exports.run = async (client, message, args, player) => {
+  try {
+    let urlRed = await getRed("ChingaTuMadreNoko");
+    const { subreddit, title, url, author } = urlRed.data;
+    const embed = new EmbedBuilder()
+      .setTitle(`holis bonis`)
+      .setDescription(`**${title}.**\nPublicado en ${subreddit} por ${author}. \nPedido por ${message.author}.`)
+      .setImage(url)
+      .setFooter({ text: "CyopnBot" })
+      .setTimestamp();
+    message.reply({ embeds: [embed] });
+  } catch (e) {
+    console.log(e);
+  }
+};
 module.exports.config = {
-    name: "meme",
-    aliases: ['mm']
-}
+  name: "meme",
+  aliases: ["mm"],
+};

@@ -1,15 +1,15 @@
-const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const star = require('star-labs');
-module.exports.run = async(client, message, args) => {
+module.exports.run = async(client, message, args, player) => {
     try {
         let sc = await star.suicide()
-        let embed = new Discord.MessageEmbed()
+        let embed = new EmbedBuilder()
             .setTitle(`**${message.author.username}** se auto-mato`)
-            .setColor("RANDOM")
+            .setColor(Math.floor(Math.random() * 16777214) + 1)
             .setImage(sc)
-            .setFooter('CyopnBot')
+            .setFooter({ text: 'CyopnBot' })
             .setTimestamp()
-        message.channel.send(embed)
+        message.reply({ embeds: [embed] })
     } catch (e) {
         console.log(e)
     }

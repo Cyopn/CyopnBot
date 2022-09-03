@@ -1,18 +1,48 @@
-const Discord = require('discord.js')
+const Discord = require('discord.js');
+const { createEmbed } = require('../lib/functions');
 module.exports.run = async(client, message, args) => {
-    if (!message.member.voice.channel) return message.channel.send("Debes estar en un canal de voz");
-    if (message.guild.me.voice.channel && message.member.voice.channel.id !== message.guild.me.voice.channel.id) return message.channel.send("Debes estar en mismo canal de voz que yo");
-    try {
-        if (client.player.isPlaying(message)) {
-            client.player.skip(message)
-            message.react('👍')
-        } else {
-            message.channel.send('No hay nada en reproduccion')
+    let voicechannel = message.member.voice.channel
+    ? message.member.voice.channel
+    : null;
+
+  const queue = player.getQueue(voicechannel.guild.id);
+
+  if (voicechannel == null) {
+    embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
+    message.reply({ embeds: [embed] });
+  } else {
+    if (queue.metadata.channel != voicechannel.id) {
+      embed = await createEmbed(
+        "Advertencia",
+        "Debes estar en el mismo canal de voz que yo."
+      );
+      message.reply({ embeds: [embed] });
+    } else {
+      if (!queue.playing) {
+        embed = await createEmbed(
+          "Advertencia",
+          "No se esta reproduciendo nada justo ahora"
+        );
+        message.reply({ embeds: [embed] });
+      } else {
+        try {
+          const ct=queue.current;
+          const sc=queue.skip();
+            if(sc){
+                message.react("✅");
+            }
+        } catch (e) {
+          embed = await createEmbed(
+            "Error",
+            "Ocurrio un error al intentar pausar, intenta de nuevo o contacta a soporte"
+          );
+          message.reply({ embeds: [embed] });
+          console.log(e);
         }
-    } catch (e) {
-        console.log(e)
+      }
     }
-}
+  }
+};
 module.exports.config = {
     name: "skip",
     aliases: ['sk']

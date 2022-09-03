@@ -1,13 +1,13 @@
-const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const fetch = require('node-fetch');
-module.exports.run = async(client, message, args) => {
+module.exports.run = async(client, message, args, player) => {
     const { file } = await fetch('https://aws.random.cat/meow').then(response => response.json());
-    let embed = new Discord.MessageEmbed()
+    let embed = new EmbedBuilder()
         .setTitle('Hola')
         .setImage(file)
         .setTimestamp()
-        .setFooter('CyopnBot')
-    message.channel.send(embed);
+        .setFooter({ text: 'CyopnBot' })
+    message.reply({ embeds: [embed] });
 }
 module.exports.config = {
     name: "cat",

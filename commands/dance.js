@@ -1,15 +1,15 @@
-const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const star = require('star-labs');
-module.exports.run = async(client, message, args) => {
+module.exports.run = async(client, message, args, player) => {
     try {
         let dn = await star.dance()
-        let embed = new Discord.MessageEmbed()
+        let embed = new EmbedBuilder()
             .setDescription(`**${message.author.username}** esta bailando `)
-            .setColor("RANDOM")
-            .setFooter('CyopnBot')
+            .setColor(Math.floor(Math.random() * 16777214) + 1)
+            .setFooter({ text: 'CyopnBot' })
             .setTimestamp()
             .setImage(dn)
-        message.channel.send(embed)
+        message.reply({ embeds: [embed] })
     } catch (e) {
         console.log(e)
     }

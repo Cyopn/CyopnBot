@@ -1,27 +1,70 @@
-const Discord=require('discord.js')
-module.exports.run = async(client, message, args) => {
-        if (!message.member.voice.channel) return message.channel.send("Debes estar en un canal de voz");
-        if (message.guild.me.voice.channel && message.member.voice.channel.id !== message.guild.me.voice.channel.id) return message.channel.send("Debes estar en mismo canal de voz que yo");
-        try {
-            if (client.player.isPlaying(message)) {
-                const queue = client.player.getQueue(message)
-                let embed = new Discord.MessageEmbed()
-                    .setTitle(`Lista de reproduccion en: ${message.guild.name} ${client.player.getQueue(message).loopMode ? '(looped)' : ''}`)
-                    .setDescription(`Reproduciendo : ${queue.playing.title} | ${queue.playing.author}\n\n ${client.player.createProgressBar(message, { timecodes: true })} \n\n` + (queue.tracks.map((track, i=1) => {
-                                return `#${i + 1} - ${track.title} | ${track.author} (Pedido por : ${track.requestedBy.username})`
-                            }).slice(0, 5).join('\n') + `\n\n${queue.tracks.length > 5 ? `y **${queue.tracks.length - 5}** otras canciones...` : `**${queue.tracks.length}** Cancione(s) en cola...`}`))
-                            .setColor('RANDOM')
-                            .setFooter('CyopnBot')
-                            .setTimestamp()
-                  message.channel.send(embed)
+const { EmbedBuilder } = require("discord.js");
+const { createEmbed } = require("../lib/functions");
+module.exports.run = async (client, message, args, player) => {
+  let voicechannel = message.member.voice.channel
+    ? message.member.voice.channel
+    : null;
+
+  const queue = player.getQueue(voicechannel.guild.id);
+
+  if (voicechannel == null) {
+    embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
+    message.reply({ embeds: [embed] });
+  } else {
+    if (queue.metadata.channel != voicechannel.id) {
+      embed = await createEmbed(
+        "Advertencia",
+        "Debes estar en el mismo canal de voz que yo."
+      );
+      message.reply({ embeds: [embed] });
     } else {
-        message.channel.send('No hay nada en reproduccion')
+      if (!queue.playing) {
+        embed = await createEmbed(
+          "Advertencia",
+          "No se esta reproduciendo nada justo ahora"
+        );
+        message.reply({ embeds: [embed] });
+      } else {
+        let page = parseInt(args.join(""));
+        if (args.join("") == "") page = 1;
+        try {
+          const pageStart = 10 * (page - 1);
+          const pageEnd = pageStart + 10;
+          const currentTrack = queue.current;
+          const tracks = queue.tracks.slice(pageStart, pageEnd).map((m, i) => {
+            return `${i + pageStart + 1}. **${m.title}** ([Fuente](${m.url}))`;
+          });
+          console.log(queue);
+          let embed = new EmbedBuilder()
+            .setTitle(`Lista de reproduccion`)
+            .setDescription(
+              `${tracks.join("\n")} ${
+                queue.tracks.length > pageEnd
+                  ? `\n...${queue.tracks.length - pageEnd} mas canciones`
+                  : ""
+              }`
+            )
+            .addFields({
+              name: `Reproduciendo ahora`,
+              value: `${currentTrack.title}`,
+            })
+            .setColor(Math.floor(Math.random() * 16777214) + 1)
+            .setFooter({ text: "CyopnBot" })
+            .setTimestamp();
+          message.reply({ embeds: [embed] });
+        } catch (e) {
+          embed = await createEmbed(
+            "Error",
+            "Ocurrio un error al intentar pausar, intenta de nuevo o contacta a soporte"
+          );
+          message.reply({ embeds: [embed] });
+          console.log(e);
+        }
+      }
     }
-} catch (e) {
-    console.log(e)
-}
-}
+  }
+};
 module.exports.config = {
-name: "queue",
-aliases: ['q']
-}
+  name: "queue",
+  aliases: ["q"],
+};

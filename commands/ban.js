@@ -1,5 +1,5 @@
-const Discord = require("discord.js");
-module.exports.run = async(client, message, args) => {
+const { EmbedBuilder } = require("discord.js");
+module.exports.run = async(client, message, args, player) => {
     if (!message.member.hasPermission("BAN_MEMBERS")) return message.reply('Tu no puedes banear usuarios').catch(console.error);
     let user = message.mentions.users.first();
     let razon = args.slice(1).join(' ');

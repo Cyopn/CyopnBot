@@ -1,6 +1,6 @@
-const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const star = require('star-labs');
-module.exports.run = async(client, message, args) => {
+module.exports.run = async(client, message, args, player) => {
     try {
         let miembro = message.mentions.users.first();
         if (!miembro) {
@@ -8,13 +8,13 @@ module.exports.run = async(client, message, args) => {
 
         } else {
             let hug = await star.hug()
-            let embed = new Discord.MessageEmbed()
+            let embed = new EmbedBuilder()
                 .setTitle(`**${message.author.username}** abrazo a **${miembro.username}**`)
-                .setColor("RANDOM")
+                .setColor(Math.floor(Math.random() * 16777214) + 1)
                 .setImage(hug)
-                .setFooter('CyopnBot')
+                .setFooter({ text: 'CyopnBot' })
                 .setTimestamp()
-            message.channel.send(embed)
+            message.reply({ embeds: [embed] })
         }
     } catch (e) {
         console.log(e)

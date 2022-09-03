@@ -1,5 +1,5 @@
-const Discord = require("discord.js");
-module.exports.run = async(client, message, args) => {
+const { EmbedBuilder } = require("discord.js");
+module.exports.run = async(client, message, args, player) => {
     message.channel.send({
         embed: {
             color: "RANDOM",

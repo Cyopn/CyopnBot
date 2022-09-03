@@ -1,25 +1,68 @@
-const Discord = require('discord.js')
-module.exports.run = async(client, message, args) => {
-    if (!message.member.voice.channel) return message.channel.send("Debes estar en un canal de voz");
-    if (message.guild.me.voice.channel && message.member.voice.channel.id !== message.guild.me.voice.channel.id) return message.channel.send("Debes estar en mismo canal de voz que yo");
-    try {
-        if (client.player.isPlaying(message)) {
-            let volume = parseInt(args.join(" "));
-            if (volume) {
-                if (isNaN(args[0])) return message.channel.send("Ingresa un numero valido");
-                client.player.setVolume(message, volume)
-                message.react('👍')
+const Discord = require("discord.js");
+module.exports.run = async (client, message, args) => {
+  let voicechannel = message.member.voice.channel
+    ? message.member.voice.channel
+    : null;
+
+  const queue = player.getQueue(voicechannel.guild.id);
+
+  if (voicechannel == null) {
+    embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
+    message.reply({ embeds: [embed] });
+  } else {
+    if (queue.metadata.channel != voicechannel.id) {
+      embed = await createEmbed(
+        "Advertencia",
+        "Debes estar en el mismo canal de voz que yo."
+      );
+      message.reply({ embeds: [embed] });
+    } else {
+      if (!queue.playing) {
+        embed = await createEmbed(
+          "Advertencia",
+          "No se esta reproduciendo nada justo ahora"
+        );
+        message.reply({ embeds: [embed] });
+      } else {
+        try {
+          const v = parseInt(args.join(""));
+          if (!v || isNaN(v)) {
+            embed = await createEmbed(
+              "Reproductor",
+              `El volumen justo ahora es ${queue.volume}`
+            );
+            message.reply({ embeds: [embed] });
+          } else {
+            if (v < 0 || v > 100) {
+              embed = await createEmbed(
+                "Reproductor",
+                "El volumen debe estar dentro del rango: 0 a 100"
+              );
+              message.reply({ embeds: [embed] });
             } else {
-                message.channel.send("Ingresa un numero");
+              const sc = queue.setVolume(v);
+              if (sc) {
+                embed = await createEmbed(
+                  "Reproductor",
+                  `Se ajusto el volumen a ${v}`
+                );
+                message.reply({ embeds: [embed] });
+              }
             }
-        } else {
-            message.channel.send('No hay nada en reproduccion')
+          }
+        } catch (e) {
+          embed = await createEmbed(
+            "Error",
+            "Ocurrio un error al intentar pausar, intenta de nuevo o contacta a soporte"
+          );
+          message.reply({ embeds: [embed] });
+          console.log(e);
         }
-    } catch (e) {
-        console.log(e)
+      }
     }
-}
+  }
+};
 module.exports.config = {
-    name: "volume",
-    aliases: ['vl']
-}
+  name: "volume",
+  aliases: ["vl"],
+};

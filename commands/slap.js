@@ -1,19 +1,19 @@
-const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const star = require('star-labs');
-module.exports.run = async(client, message, args) => {
+module.exports.run = async(client, message, args, player) => {
     try {
         let miembro = message.mentions.users.first();
         if (!miembro) {
             message.channel.send('Debes mencionar a alguien');
         } else {
             let sp = await star.slap()
-            let embed = new Discord.MessageEmbed()
+            let embed = new EmbedBuilder()
                 .setTitle(`**${message.author.username}** bofeteo a **${miembro.username}**`)
-                .setColor("RANDOM")
+                .setColor(Math.floor(Math.random() * 16777214) + 1)
                 .setImage(sp)
-                .setFooter('CyopnBot')
+                .setFooter({ text: 'CyopnBot' })
                 .setTimestamp()
-            message.channel.send(embed)
+            message.reply({ embeds: [embed] })
         }
     } catch (e) {
         console.log(e)

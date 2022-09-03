@@ -1,6 +1,6 @@
-const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const db = require('megadb');
-module.exports.run = async(client, message, args) => {
+module.exports.run = async(client, message, args, player) => {
     try {
         let args1 = args.join(' ')
         let obj = args[0]
@@ -16,32 +16,32 @@ module.exports.run = async(client, message, args) => {
                 tt = to - 1
                 let { dinero } = await bu.obtener(`${message.guild.id}.${message.author.id}`)
                 if (dinero <= 0) {
-                    const embed = new Discord.MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle('PejeCoins insuficientes!')
                         .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                        .setFooter('CyopnBot')
-                        .setColor('RANDOM')
+                        .setFooter({ text: 'CyopnBot' })
+                        .setColor(Math.floor(Math.random() * 16777214) + 1)
                         .setTimestamp()
-                    message.channel.send(embed)
+                    message.reply({ embeds: [embed] })
                 } else {
                     if (dinero <= tt) {
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     } else {
                         bu.sumar(`${message.guild.id}.${message.author.id}.criko`, parseInt(ct))
                         bu.restar(`${message.guild.id}.${message.author.id}.dinero`, to)
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Adquirio \`${ct}\` criko(s) por \`${to}\` PejeCoins`)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     }
                 }
             } else {
@@ -95,32 +95,32 @@ module.exports.run = async(client, message, args) => {
                 tt = to - 1
                 let { dinero } = await bu.obtener(`${message.guild.id}.${message.author.id}`)
                 if (dinero <= 0) {
-                    const embed = new Discord.MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle('PejeCoins insuficientes!')
                         .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                        .setFooter('CyopnBot')
-                        .setColor('RANDOM')
+                        .setFooter({ text: 'CyopnBot' })
+                        .setColor(Math.floor(Math.random() * 16777214) + 1)
                         .setTimestamp()
-                    message.channel.send(embed)
+                    message.reply({ embeds: [embed] })
                 } else {
                     if (dinero <= tt) {
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     } else {
                         bu.sumar(`${message.guild.id}.${message.author.id}.toston`, parseInt(ct))
                         bu.restar(`${message.guild.id}.${message.author.id}.dinero`, to)
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Adquirio \`${ct}\` toston(es) por \`${to}\` PejeCoins`)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     }
                 }
             } else {
@@ -173,32 +173,32 @@ module.exports.run = async(client, message, args) => {
                 tt = to - 1
                 let { dinero } = await bu.obtener(`${message.guild.id}.${message.author.id}`)
                 if (dinero <= 0) {
-                    const embed = new Discord.MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle('PejeCoins insuficientes!')
                         .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                        .setFooter('CyopnBot')
-                        .setColor('RANDOM')
+                        .setFooter({ text: 'CyopnBot' })
+                        .setColor(Math.floor(Math.random() * 16777214) + 1)
                         .setTimestamp()
-                    message.channel.send(embed)
+                    message.reply({ embeds: [embed] })
                 } else {
                     if (dinero <= tt) {
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     } else {
                         bu.sumar(`${message.guild.id}.${message.author.id}.pbm`, parseInt(ct))
                         bu.restar(`${message.guild.id}.${message.author.id}.dinero`, to)
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Adquirio \`${ct}\` paquete(s) basico(s) de mona por \`${to}\` PejeCoins`)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     }
                 }
             } else {
@@ -251,32 +251,32 @@ module.exports.run = async(client, message, args) => {
                 tt = to - 1
                 let { dinero } = await bu.obtener(`${message.guild.id}.${message.author.id}`)
                 if (dinero <= 0) {
-                    const embed = new Discord.MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle('PejeCoins insuficientes!')
                         .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                        .setFooter('CyopnBot')
-                        .setColor('RANDOM')
+                        .setFooter({ text: 'CyopnBot' })
+                        .setColor(Math.floor(Math.random() * 16777214) + 1)
                         .setTimestamp()
-                    message.channel.send(embed)
+                    message.reply({ embeds: [embed] })
                 } else {
                     if (dinero <= tt) {
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     } else {
                         bu.sumar(`${message.guild.id}.${message.author.id}.pnm`, parseInt(ct))
                         bu.restar(`${message.guild.id}.${message.author.id}.dinero`, to)
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Adquirio \`${ct}\` paquete(s) normal(es) de mona por \`${to}\` PejeCoins`)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     }
                 }
             } else {
@@ -329,32 +329,32 @@ module.exports.run = async(client, message, args) => {
                 tt = to - 1
                 let { dinero } = await bu.obtener(`${message.guild.id}.${message.author.id}`)
                 if (dinero <= 0) {
-                    const embed = new Discord.MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle('PejeCoins insuficientes!')
                         .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                        .setFooter('CyopnBot')
-                        .setColor('RANDOM')
+                        .setFooter({ text: 'CyopnBot' })
+                        .setColor(Math.floor(Math.random() * 16777214) + 1)
                         .setTimestamp()
-                    message.channel.send(embed)
+                    message.reply({ embeds: [embed] })
                 } else {
                     if (dinero <= tt) {
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     } else {
                         bu.sumar(`${message.guild.id}.${message.author.id}.pdm`, parseInt(ct))
                         bu.restar(`${message.guild.id}.${message.author.id}.dinero`, to)
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Adquirio \`${ct}\` paquete(s) delux de mona por \`${to}\` PejeCoins`)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     }
                 }
             } else {
@@ -407,32 +407,32 @@ module.exports.run = async(client, message, args) => {
                 tt = to - 1
                 let { dinero } = await bu.obtener(`${message.guild.id}.${message.author.id}`)
                 if (dinero <= 0) {
-                    const embed = new Discord.MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle('PejeCoins insuficientes!')
                         .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                        .setFooter('CyopnBot')
-                        .setColor('RANDOM')
+                        .setFooter({ text: 'CyopnBot' })
+                        .setColor(Math.floor(Math.random() * 16777214) + 1)
                         .setTimestamp()
-                    message.channel.send(embed)
+                    message.reply({ embeds: [embed] })
                 } else {
                     if (dinero <= tt) {
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     } else {
                         bu.sumar(`${message.guild.id}.${message.author.id}.jarron`, parseInt(ct))
                         bu.restar(`${message.guild.id}.${message.author.id}.dinero`, to)
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Adquirio \`${ct}\` jarron(es) por \`${to}\` PejeCoins`)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     }
                 }
             } else {
@@ -485,32 +485,32 @@ module.exports.run = async(client, message, args) => {
                 tt = to - 1
                 let { dinero } = await bu.obtener(`${message.guild.id}.${message.author.id}`)
                 if (dinero <= 0) {
-                    const embed = new Discord.MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle('PejeCoins insuficientes!')
                         .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                        .setFooter('CyopnBot')
-                        .setColor('RANDOM')
+                        .setFooter({ text: 'CyopnBot' })
+                        .setColor(Math.floor(Math.random() * 16777214) + 1)
                         .setTimestamp()
-                    message.channel.send(embed)
+                    message.reply({ embeds: [embed] })
                 } else {
                     if (dinero <= tt) {
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     } else {
                         bu.sumar(`${message.guild.id}.${message.author.id}.mlp`, parseInt(ct))
                         bu.restar(`${message.guild.id}.${message.author.id}.dinero`, to)
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Adquirio \`${ct}\` muñeco(s) de my litle pony por \`${to}\` PejeCoins`)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     }
                 }
             } else {
@@ -563,32 +563,32 @@ module.exports.run = async(client, message, args) => {
                 tt = to - 1
                 let { dinero } = await bu.obtener(`${message.guild.id}.${message.author.id}`)
                 if (dinero <= 0) {
-                    const embed = new Discord.MessageEmbed()
+                    const embed = new EmbedBuilder()
                         .setTitle('PejeCoins insuficientes!')
                         .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                        .setFooter('CyopnBot')
-                        .setColor('RANDOM')
+                        .setFooter({ text: 'CyopnBot' })
+                        .setColor(Math.floor(Math.random() * 16777214) + 1)
                         .setTimestamp()
-                    message.channel.send(embed)
+                    message.reply({ embeds: [embed] })
                 } else {
                     if (dinero <= tt) {
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Necesitas \`${to}\` PejeCoins para realizar la compra, PejeCoins actuales: \`${dinero}\``)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     } else {
                         bu.sumar(`${message.guild.id}.${message.author.id}.mlp`, parseInt(ct))
                         bu.restar(`${message.guild.id}.${message.author.id}.dinero`, to)
-                        const embed = new Discord.MessageEmbed()
+                        const embed = new EmbedBuilder()
                             .setTitle('PejeCoins insuficientes!')
                             .setDescription(`Adquirio \`${ct}\` coca(s) por \`${to}\` PejeCoins`)
-                            .setFooter('CyopnBot')
-                            .setColor('RANDOM')
+                            .setFooter({ text: 'CyopnBot' })
+                            .setColor(Math.floor(Math.random() * 16777214) + 1)
                             .setTimestamp()
-                        message.channel.send(embed)
+                        message.reply({ embeds: [embed] })
                     }
                 }
             } else {

@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 lyricsParse = require("lyrics-finder");
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, player) => {
 	try {
     const track = client.player.nowPlaying(message)
       const [songName, artistName] = track.title.split("|");
@@ -12,13 +12,13 @@ module.exports.run = async (client, message, args) => {
 			let lyrics = await lyricsParse(songNameFormated);
       if(lyrics.length > 2040) {
 				lyrics = lyrics.substr(0, 2000)
-        let embed = new Discord.MessageEmbed()
+        let embed = new EmbedBuilder()
 				.setTitle(`Letra de: ${track.title}`)
 				.setDescription(lyrics)
-				.setColor('RANDOM')
-				.setFooter('CyopnBot')
+				.setColor(Math.floor(Math.random() * 16777214) + 1)
+				.setFooter({ text: 'CyopnBot' })
 				.setTimestamp();
-			message.channel.send(embed);
+			message.reply({ embeds: [embed] });
       } else if(!lyrics.length) {
         message.channel.send('Sin resultados!')
 			}

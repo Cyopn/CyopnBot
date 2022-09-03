@@ -1,5 +1,5 @@
-const Discord = require("discord.js");
-module.exports.run = async(client, message, args) => {
+const { EmbedBuilder } = require("discord.js");
+module.exports.run = async(client, message, args, player) => {
     let Canalvoz = message.member.voice.channel;
     if (!Canalvoz || Canalvoz.type !== 'voice') {
         message.channel.send('¡Necesitas unirte a un canal de voz primero!.').catch(error => message.channel.send(error));
