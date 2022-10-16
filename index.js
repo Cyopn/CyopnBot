@@ -8,7 +8,19 @@ const { Player } = require("discord-player");
 const { createEmbed } = require("./lib/functions");
 const dotenv = require("dotenv").config();
 const config = process.env;
+// Hosting
 
+const express = require('express')
+const app = express();
+const port = 3000
+
+app.get('/', (req, res) => res.send('nose'))
+
+app.listen(port, () =>
+  console.log(`App listener: http://localhost:${port}`)
+);
+
+// Hosting
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -58,6 +70,7 @@ client.on("messageCreate", async (message) => {
     commands.get(command) || commands.get(aliases.get(command));
   if (!commandFile) return;
   try {
+
     commandFile.run(client, message, args, player);
   } catch (e) {
     return message.reply(`Un error ocurrio en ${command}: \n ${e.message}`);
@@ -81,7 +94,7 @@ player.on("trackStart", (queue, track) => {
     .setColor(Math.floor(Math.random() * 16777214) + 1)
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
-  queue.guild.systemChannel.send({ embeds: [embed] });
+  queue.metadata.channel.send({ embeds: [embed] });
 });
 
 player.on("trackAdd", (queue, track) => {
@@ -94,30 +107,30 @@ player.on("trackAdd", (queue, track) => {
     .setColor(Math.floor(Math.random() * 16777214) + 1)
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
-  queue.guild.systemChannel.send({ embeds: [embed] });
+  queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("connectionError", (queue) => {
+player.on("connectionError", (queue, error) => {
   let embed = new EmbedBuilder()
     .setTitle(`nose`)
-    .setDescription(`${queue}`)
+    .setDescription(`${error}`)
     .setColor(Math.floor(Math.random() * 16777214) + 1)
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
-  queue.guild.systemChannel.send({ embeds: [embed] });
+  queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("error", (queue) => {
+player.on("error", (queue, error) => {
   let embed = new EmbedBuilder()
     .setTitle(`nose`)
-    .setDescription(`${queue}`)
+    .setDescription(`${error}`)
     .setColor(Math.floor(Math.random() * 16777214) + 1)
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
-  queue.guild.systemChannel.send({ embeds: [embed] });
+  queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("tracksAdd", (queue, track)=>{
+player.on("tracksAdd", (queue, track) => {
   console.log(queue);
   console.log(track)
 })
