@@ -13,7 +13,7 @@ module.exports.run = async(client, message, args, player) => {
         .setColor(Math.floor(Math.random() * 16777214) + 1)
         .setFooter({ text: 'CyopnBot' })
         .setTimestamp()
-    message.channel.send({ embed });
+    message.reply({ embeds: [embed] });
 }
 module.exports.config = {
     name: "server",

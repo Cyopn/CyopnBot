@@ -1,31 +1,53 @@
-const Discord=require('discord.js')
-module.exports.run = async(client, message, args, player) => {
-    if (!message.member.voice.channel) return message.channel.send("Debes estar en un canal de voz");
-    if (message.guild.me.voice.channel && message.member.voice.channel.id !== message.guild.me.voice.channel.id) return message.channel.send("Debes estar en mismo canal de voz que yo");
-    if (!args){
-       message.channel.send('Ingresa el numero de pista a saltar')
-    const queue = client.player.getQueue(message)
-                let embed = new EmbedBuilder()
-                    .setTitle(`Lista de reproduccion en: ${message.guild.name} ${client.player.getQueue(message).loopMode ? '(looped)' : ''}`)
-                    .setDescription(`Reproduciendo : ${queue.playing.title} | ${queue.playing.author}\n\n` + (queue.tracks.map((track, i) => {
-                                return `**#${i + 1}** - ${track.title} | ${track.author} (Pedido por : ${track.requestedBy.username})`
-                            }).slice(0, 5).join('\n') + `\n\n${queue.tracks.length > 5 ? `y **${queue.tracks.length - 5}** otras canciones...` : `**${queue.tracks.length}** Cancione(s) en cola...`}`))
-                            .setColor(Math.floor(Math.random() * 16777214) + 1)
-                            .setFooter({ text: 'CyopnBot' })
-                            .setTimestamp()
-                  message.reply({ embeds: [embed] })
-    }
-    try {
-        if (client.player.isPlaying(message)) {
-            client.player.jump(message, parseInt(args))
-            message.react('👍')
+const Discord = require('discord.js')
+module.exports.run = async (client, message, args, player) => {
+    let voicechannel = message.member.voice.channel
+        ? message.member.voice.channel
+        : null;
+    let index = parseInt(args.join())
+
+    const queue = player.getQueue(voicechannel.guild.id);
+
+    if (voicechannel == null) {
+        embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
+        message.reply({ embeds: [embed] });
+    } else {
+        if (queue.metadata.vc != voicechannel.id) {
+            embed = await createEmbed(
+                "Advertencia",
+                "Debes estar en el mismo canal de voz que yo."
+            );
+            message.reply({ embeds: [embed] });
         } else {
-            message.channel.send('No hay nada en reproduccion')
+            if (!index || index.length < 0) {
+                embed = await createEmbed(
+                    "Advertencia",
+                    "Dedes ingresar una busqueda."
+                );
+                message.reply({ embeds: [embed] });
+            } else {
+                try {
+                    if (!queue.playing) {
+                        embed = await createEmbed(
+                            "Advertencia",
+                            "No se esta reproduciendo nada justo ahora"
+                        );
+                        message.reply({ embeds: [embed] });
+                    } else {
+                        queue.jump(index)
+                        message.react("✅");
+                    }
+                } catch (e) {
+                    queue.destroy();
+                    embed = await createEmbed(
+                        "Error",
+                        `Ocurrio un error al intentar reproducir: \n${e}`
+                    );
+                    message.reply({ embeds: [embed] });
+                }
+            }
         }
-    } catch (e) {
-        console.log(e)
     }
-}
+};
 module.exports.config = {
     name: "jump",
     aliases: ['jm']

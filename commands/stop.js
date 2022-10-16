@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-module.exports.run = async(client, message, args) => {
+module.exports.run = async(client, message, args, player) => {
     let voicechannel = message.member.voice.channel
     ? message.member.voice.channel
     : null;
@@ -10,7 +10,7 @@ module.exports.run = async(client, message, args) => {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
   } else {
-    if (queue.metadata.channel != voicechannel.id) {
+    if (queue.metadata.vc != voicechannel.id) {
       embed = await createEmbed(
         "Advertencia",
         "Debes estar en el mismo canal de voz que yo."
@@ -28,7 +28,7 @@ module.exports.run = async(client, message, args) => {
           queue.destroy();
           embed = await createEmbed(
             "Reproductor",
-            "Se ha detenido la reproduccion"
+            "Se ha detenido y eliminado la lista de reproduccion"
           );
           message.reply({ embeds: [embed] });
         } catch (e) {

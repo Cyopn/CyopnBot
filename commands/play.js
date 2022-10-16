@@ -6,27 +6,29 @@ module.exports.run = async (client, message, args, player) => {
   let voicechannel = message.member.voice.channel
     ? message.member.voice.channel
     : null;
-  let queue = player.getQueue(voicechannel.guild.id);
 
-  if (queue == undefined) {
-    queue = player.createQueue(voicechannel.guild.id, {
-      autoSelfDeaf: false,
-      metadata: {
-        channel: voicechannel.id,
-      },
-      leaveOnEnd: false,
-      leaveOnEmpity:false
-    });
-  }
 
-  if(query.includes("playlist"))return message.reply("No se soportan playlist")
 
+
+
+  if (query.includes("playlist")) return message.reply("No se soportan playlist")
 
   if (voicechannel == null) {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
   } else {
-    if (queue.metadata.channel != voicechannel.id) {
+    let queue = player.getQueue(voicechannel.guild.id);
+
+    if (queue == undefined) {
+      queue = player.createQueue(voicechannel.guild.id, {
+        metadata: {
+          channel: message.channel,
+          vc: voicechannel.id
+        }
+      });
+    }
+
+    if (queue.metadata.vc != voicechannel.id) {
       embed = await createEmbed(
         "Advertencia",
         "Debes estar en el mismo canal de voz que yo."

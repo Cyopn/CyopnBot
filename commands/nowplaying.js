@@ -11,7 +11,7 @@ module.exports.run = async (client, message, args, player) => {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
   } else {
-    if (queue.metadata.channel != voicechannel.id) {
+    if (queue.metadata.vc != voicechannel.id) {
       embed = await createEmbed(
         "Advertencia",
         "Debes estar en el mismo canal de voz que yo."
@@ -35,6 +35,7 @@ module.exports.run = async (client, message, args, player) => {
             pre.progress == "Infinity" ? "Live" : pre.progress + "%"
           }\`) `)
           .addFields({name:'\u200b', value:`${pro.replace(/ 0:00/g, ' ◉ LIVE')}`})
+          .setThumbnail(queue.current.thumbnail)
           .setColor(Math.floor(Math.random() * 16777214) + 1)
           .setFooter({ text: "CyopnBot" })
           .setTimestamp();

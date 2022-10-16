@@ -10,7 +10,7 @@ module.exports.run = async (client, message, args, player) => {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
   } else {
-    if (queue.metadata.channel != voicechannel.id) {
+    if (queue.metadata.vc != voicechannel.id) {
       embed = await createEmbed(
         "Advertencia",
         "Debes estar en el mismo canal de voz que yo."
