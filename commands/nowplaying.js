@@ -53,6 +53,6 @@ module.exports.run = async (client, message, args, player) => {
   }
 };
 module.exports.config = {
-  name: "nowp",
+  name: "nowplaying",
   aliases: ["np"],
 };

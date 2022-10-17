@@ -1,79 +1,27 @@
 const { EmbedBuilder } = require("discord.js");
-module.exports.run = async(client, message, args, player) => {
-    message.channel.send({
-        embed: {
-            color: "RANDOM",
-            title: "Ayuda en comandos de musica",
-            description: "Usa el prefijo '+' antes de una de las palabras clave",
-            fields: [{
-                    name: "Unirse",
-                    value: "(Uso: +join), Me añade a algun canal de voz al que estes conectado"
-                },
-                {
-                    name: "Abandonar",
-                    value: "(Uso: +leave), Usame para abandonar el canal de voz"
-                },
-                {
-                    name: "Reproducir",
-                    value: "(Uso: +play), Usame para reproucir algun video musical de youtube/soundcloud/spotify"
-                },
-                {
-                    name: "Pausar",
-                    value: "(Uso: +pause), Usame para pausar la reproduccion"
-                },
-                {
-                    name: "Resumir",
-                    value: "(Uso: +resume), Usame para reanudar una reproduccion en pausa"
-                },
-                {
-                    name: "Lista de reproduccion",
-                    value: "(Uso: +queue), Devuelve la lista de reproduccion"
-                },
-                {
-                    name: "Saltar",
-                    value: "(Uso: +skip), Salta la cancion en reproduccion"
-                },
-                {
-                    name: "Detener",
-                    value: "(Uso: +stop), Detiene la cancion en reproduccion y abandona el canal de voz"
-                },
-                {
-                    name: "Volumen",
-                    value: `(Uso: +volume \`numero entero\` ), Detiene la cancion en reproduccion`
-                },
-                {
-                    name: 'Repetir',
-                    value: '(Uso: +repeat), Repite la cancion en reproduccion'
-                },
-                {
-                    name: 'Atras',
-                    value: '(Uso: +back), Regresa una cancion atras en la lista de reproduccion'
-                },
-                {
-                    name: 'Limpiar lista de reproduccion',
-                    value: '(Uso: +clearqueue), Eliminda todas las canciones en cola de reproduccion'
-                },
-                {
-                    name: 'Saltar(Numero especifico)',
-                    value: `(Uso: +jump \`Numero entero\`)`
-                },
-                {
-                    name: 'Letra',
-                    value: '(Uso: +lyric), Devuelve la letra de una cancion en reproduccion(aun en desarrollo)'
-                },
-                {
-                    name: 'En reproduccion',
-                    value: '(Uso: +nowplaying), Devuelve informacion de la cancion en reproduccion'
-                },
-                {
-                    name: 'Lista de reproduccion',
-                    value: '(Uso: +queue), Devuelve las canciones en cola que se reproducen/reproduciran'
-                }
-            ],
-            timestamp: new Date(),
-            footer: 'CyopnBot'
-        }
-    })
+module.exports.run = async (client, message, args, player) => {
+
+    let embed = new EmbedBuilder()
+        .setTitle("Comandos")
+        .setDescription(`Usa el prefijo '+' antes de una de las palabras clave`)
+        .addFields(
+            { name: "Reproducir", value: "(Uso: +play), Usame para reproucir algun video musical de youtube (soundcloud/spotify aun en desarrollo)" },
+            { name: "Pausar", value: "(Uso: +pause), Usame para pausar la reproduccion" },
+            { name: "Reanudar", value: "(Uso: +resume), Usame para reanudar una reproduccion en pausa" },
+            { name: "Lista de reproduccion", value: "(Uso: +queue), Devuelve la lista de reproduccion" },
+            { name: "Omitir", value: "(Uso: +skip), Omite la cancion en reproduccion" },
+            { name: "Detener", value: "(Uso: +stop), Detiene la cancion en reproduccion y abandona el canal de voz" },
+            { name: "Volumen", value: `(Uso: +volume \`numero entero\` ), Detiene la cancion en reproduccion` },
+            { name: 'Atras', value: '(Uso: +back), Regresa una cancion atras en la lista de reproduccion' },
+            { name: 'Limpiar lista de reproduccion', value: '(Uso: +clearqueue), Eliminda todas las canciones en cola de reproduccion' },
+            { name: 'Saltar(Numero de canciones a omitir)', value: `(Uso: +jump \`Numero entero\`)` },
+            { name: 'En reproduccion', value: '(Uso: +nowplaying), Devuelve informacion de la cancion en reproduccion' },
+        )
+        .setFooter({ text: "CyopnBot" })
+        .setColor(Math.floor(Math.random() * 16777214) + 1)
+        .setTimestamp();
+
+    message.reply({ embeds: [embed] })
 }
 module.exports.config = {
     name: "hlpmusc",

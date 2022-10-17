@@ -6,7 +6,7 @@ module.exports.run = async(client, message, args, player) => {
         if (!bu.tiene(message.guild.id)) bu.establecer(message.guild.id, {})
         if (!bu.tiene(`${message.guild.id}.${message.author.id}`)) bu.establecer(`${message.guild.id}.${message.author.id}`, { dinero: 0, criko: 0, toston: 0, pbm: 0, tmvt: 0, pnm: 0, tmvtn: 0, pdm: 0, tlr: 0, jarron: 0, mlp: 0 })
         let swd = Math.floor(Math.random() * 5)
-        let ar1=['Se la has chupado a un travesti', 'La hiciste de canica en una fiesta del peje', 'Le cortaste el pelo al chocoflan', 'Ganaste una pelea contra enanos con sida', 'Te han transferido a un CCH', 'Preñaste a tu prima!', 'Gano el cruz azul (Evento raro)']
+        let ar1=['Se la has chupado a un travesti', 'La hiciste de canica en una fiesta del peje', 'Le cortaste el pelo al chocoflan', 'Ganaste una pelea contra enanos con sida', 'Te han transferido a un CCH', '¡Preñaste a tu prima!', 'Gano el cruz azul (Evento raro)']
         let arr=ar1[Math.floor(Math.random()*5)]
         if (swd === 1) {
             let cs1d = Math.floor(Math.random() * 10)
