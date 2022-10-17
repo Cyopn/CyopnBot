@@ -5,12 +5,11 @@ let commands = new Collection();
 let aliases = new Collection();
 const fs = require("fs");
 const { Player } = require("discord-player");
-const { createEmbed } = require("./lib/functions");
 const dotenv = require("dotenv").config();
 const config = process.env;
-// Hosting
 
-const express = require('express')
+// Hosting
+/* const express = require('express')
 const app = express();
 const port = 3000
 
@@ -18,9 +17,10 @@ app.get('/', (req, res) => res.send('nose'))
 
 app.listen(port, () =>
   console.log(`App listener: http://localhost:${port}`)
-);
+); */
 
 // Hosting
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -73,7 +73,7 @@ client.on("messageCreate", async (message) => {
 
     commandFile.run(client, message, args, player);
   } catch (e) {
-    return message.reply(`Un error ocurrio en ${command}: \n ${e.message}`);
+    return message.reply(`Un error ocurrio en ${command}: \n${e.message}`);
   }
 });
 
@@ -130,7 +130,7 @@ player.on("error", (queue, error) => {
   queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("tracksAdd", (queue, track) => {
+player.on("channelEmpty", (queue, track) => {
   console.log(queue);
   console.log(track)
 })
