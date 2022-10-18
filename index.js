@@ -27,6 +27,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildPresences
   ],
 });
 
@@ -52,12 +53,8 @@ fs.readdir("./commands/", (err, files) => {
 client.once("ready", () => {
   console.log(`${client.user.username} listo`);
   client.user.setPresence({
-    status: "dnd",
-    activities: {
-      name: "+help | ¡Hola de nuevo!",
-      type: "WATCHING",
-      url: "https://www.instagram.com/Cyopn_",
-    },
+    activities: [{ name: `nose`, type: 0, url:`www.instagram.com/Cyopn_`}],
+    status: 'dnd',
   });
 });
 
@@ -112,8 +109,8 @@ player.on("trackAdd", (queue, track) => {
 
 player.on("connectionError", (queue, error) => {
   let embed = new EmbedBuilder()
-    .setTitle(`nose`)
-    .setDescription(`${error}`)
+    .setTitle(`Error de conexion`)
+    .setDescription(`${error}\nEscribe +suport para obtener ayuda o vuelve a intentarlo`)
     .setColor(Math.floor(Math.random() * 16777214) + 1)
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
@@ -122,17 +119,12 @@ player.on("connectionError", (queue, error) => {
 
 player.on("error", (queue, error) => {
   let embed = new EmbedBuilder()
-    .setTitle(`nose`)
-    .setDescription(`${error}`)
+    .setTitle(`Error con el reproductor`)
+    .setDescription(`${error}\nEscribe +suport para obtener ayuda o vuelve a intentarlo`)
     .setColor(Math.floor(Math.random() * 16777214) + 1)
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
   queue.metadata.channel.send({ embeds: [embed] });
 });
-
-player.on("channelEmpty", (queue, track) => {
-  console.log(queue);
-  console.log(track)
-})
 
 client.login(config.token);
