@@ -7,12 +7,6 @@ module.exports.run = async (client, message, args, player) => {
     ? message.member.voice.channel
     : null;
 
-
-
-
-
-  if (query.includes("playlist")) return message.reply("No se soportan playlist")
-
   if (voicechannel == null) {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
@@ -44,20 +38,35 @@ module.exports.run = async (client, message, args, player) => {
       } else {
         try {
           if (!queue.connection) await queue.connect(voicechannel);
-
-          const track = await player
-            .search(query, {
-              requestedBy: message.member.id,
-            })
-            .then((x) => x.tracks[0]);
-          if (!track) {
-            embed = await createEmbed(
-              "Advertencia",
-              `No se encontro ningun resultado para **${query}**`
-            );
-            message.reply({ embeds: [embed] });
+          if (query.includes("playlist")) {
+            const rs = await player
+              .search(query, {
+                requestedBy: message.member.id,
+              })
+            if (rs.playlist) {
+              if (!queue.playing) {
+                let r = rs.tracks
+                queue.addTracks(r)
+                queue.play()
+              } else {
+                queue.addTracks(rs.tracks)
+              }
+            }
           } else {
-            queue.play(track);
+            const track = await player
+              .search(query, {
+                requestedBy: message.member.id,
+              })
+              .then((x) => x.tracks[0]);
+            if (!track) {
+              embed = await createEmbed(
+                "Advertencia",
+                `No se encontro ningun resultado para **${query}**`
+              );
+              message.reply({ embeds: [embed] });
+            } else {
+              queue.play(track);
+            }
           }
         } catch (e) {
           queue.destroy();
