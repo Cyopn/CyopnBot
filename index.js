@@ -127,4 +127,17 @@ player.on("error", (queue, error) => {
   queue.metadata.channel.send({ embeds: [embed] });
 });
 
+player.on("tracksAdd", (queue, tracks)=>{
+  let embed = new EmbedBuilder()
+    .setTitle(`Reproduciendo`)
+    .setDescription(
+      `Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.connection.channel.name}.\nPedido por ${tracks[0].requestedBy}`
+    )
+    .setThumbnail(tracks[0].playlist.thumbnail)
+    .setColor(Math.floor(Math.random() * 16777214) + 1)
+    .setFooter({ text: "CyopnBot" })
+    .setTimestamp();
+  queue.metadata.channel.send({ embeds: [embed] });
+});
+
 client.login(config.token);
