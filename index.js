@@ -5,21 +5,9 @@ let commands = new Collection();
 let aliases = new Collection();
 const fs = require("fs");
 const { Player } = require("discord-player");
+const keepAlive = require("./server");
 const dotenv = require("dotenv").config();
 const config = process.env;
-
-// Hosting
-/* const express = require('express')
-const app = express();
-const port = 3000
-
-app.get('/', (req, res) => res.send('nose'))
-
-app.listen(port, () =>
-  console.log(`App listener: http://localhost:${port}`)
-); */
-
-// Hosting
 
 const client = new Client({
   intents: [
@@ -156,3 +144,5 @@ player.on("tracksAdd", (queue, tracks) => {
 });
 
 client.login(config.token);
+
+keepAlive()
