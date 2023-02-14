@@ -3,3 +3,4 @@ mega_databases
 package-lock.json
 .env
 Procfile
+test.js
