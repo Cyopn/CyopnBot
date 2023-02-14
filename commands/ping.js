@@ -4,7 +4,7 @@ module.exports.run = async (client, message, args, player) => {
     .setTitle(`🏓 Pong!`)
     .setDescription(
       `Latencia del bot: ${
-        Date.now() - message.createdTimestamp
+         message.createdTimestamp- Date.now()
       }ms.\n Latencia del API: ${Math.round(client.ws.ping)}ms.`
     );
 

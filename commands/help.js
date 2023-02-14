@@ -8,7 +8,6 @@ module.exports.run = async (client, message, args, player) => {
             { name: "Avatar", value: "(Uso: +avatar), Obten el avatar de un usuario o el tuyo" },
             { name: "Ping", value: "(Uso: +ping), ¿Quieres conocer mi velocidad?, pruebame" },
             { name: "Server", value: "(Uso: +server), Solicitame los datos de tu servidor" },
-            { name: "User", value: "(Uso: +user), Obten la informacion de un usuario o el tuyo" },
             { name: "Ban", value: "(Uso: +ban \`username [razon]\`), Banea un usuario" },
             { name: "Musica", value: "(Uso: +hlpmusc), Mas informacion sobre comados para reproducir musica" },
             { name: "Soporte", value: "(Uso: +soporte), Si existe algun error y/o sugerencia, obten informacion para contacatarme" },
