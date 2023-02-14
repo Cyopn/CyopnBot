@@ -27,11 +27,19 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildPresences
   ],
 });
 
 const player = new Player(client, {
+  leaveOnEnd: false,
+  leaveOnEndCooldown: true,
+  leaveOnStop: false,
+  leaveOnEmpty: false,
+  leaveOnEmptyCooldown: 1000,
   ytdlOptions: {
     filter: "audioonly",
   },
@@ -53,7 +61,7 @@ fs.readdir("./commands/", (err, files) => {
 client.once("ready", () => {
   console.log(`${client.user.username} listo`);
   client.user.setPresence({
-    activities: [{ name: `nose`, type: 0, url:`www.instagram.com/Cyopn_`}],
+    activities: [{ name: `nose`, type: 0, url: `www.instagram.com/Cyopn_` }],
     status: 'dnd',
   });
 });
@@ -67,9 +75,9 @@ client.on("messageCreate", async (message) => {
     commands.get(command) || commands.get(aliases.get(command));
   if (!commandFile) return;
   try {
-
     commandFile.run(client, message, args, player);
   } catch (e) {
+    console.log(e)
     return message.reply(`Un error ocurrio en ${command}: \n${e.message}`);
   }
 });
@@ -108,9 +116,10 @@ player.on("trackAdd", (queue, track) => {
 });
 
 player.on("connectionError", (queue, error) => {
+  console.log(error)
   let embed = new EmbedBuilder()
     .setTitle(`Error de conexion`)
-    .setDescription(`${error}\nEscribe +suport para obtener ayuda o vuelve a intentarlo`)
+    .setDescription(`${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`)
     .setColor(Math.floor(Math.random() * 16777214) + 1)
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
@@ -118,25 +127,31 @@ player.on("connectionError", (queue, error) => {
 });
 
 player.on("error", (queue, error) => {
-  let embed = new EmbedBuilder()
-    .setTitle(`Error con el reproductor`)
-    .setDescription(`${error}\nEscribe +suport para obtener ayuda o vuelve a intentarlo`)
-    .setColor(Math.floor(Math.random() * 16777214) + 1)
-    .setFooter({ text: "CyopnBot" })
-    .setTimestamp();
-  queue.metadata.channel.send({ embeds: [embed] });
+  console.log(error)
+  if (error.includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
+    return
+  } else {
+    let embed = new EmbedBuilder()
+      .setTitle(`Error con el reproductor`)
+      .setDescription(`${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`)
+      .setColor(Math.floor(Math.random() * 16777214) + 1)
+      .setFooter({ text: "CyopnBot" })
+      .setTimestamp();
+    queue.metadata.channel.send({ embeds: [embed] });
+  }
 });
 
-player.on("tracksAdd", (queue, tracks)=>{
+player.on("tracksAdd", (queue, tracks) => {
   let embed = new EmbedBuilder()
     .setTitle(`Reproduciendo`)
     .setDescription(
       `Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.connection.channel.name}.\nPedido por ${tracks[0].requestedBy}`
     )
-    .setThumbnail(tracks[0].playlist.thumbnail)
+    .setThumbnail(tracks[0].thumbnail)
     .setColor(Math.floor(Math.random() * 16777214) + 1)
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
+
   queue.metadata.channel.send({ embeds: [embed] });
 });
 
