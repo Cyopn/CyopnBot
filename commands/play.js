@@ -11,10 +11,10 @@ module.exports.run = async (client, message, args, player) => {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
   } else {
-    let queue = player.getQueue(voicechannel.guild.id);
+    let queue = player.getQueue(message.guild);
 
     if (queue == undefined) {
-      queue = player.createQueue(voicechannel.guild.id, {
+      queue = player.createQueue(message.guild, {
         metadata: {
           channel: message.channel,
           vc: voicechannel.id
@@ -51,6 +51,15 @@ module.exports.run = async (client, message, args, player) => {
               } else {
                 queue.addTracks(rs.tracks)
               }
+            } else if (rs.playlist === null) {
+              const embed = new EmbedBuilder()
+                .setThumbnail(server.iconURL())
+                .setTitle(server.name)
+                .setDescription(`La playlist no existe`)
+                .setColor(Math.floor(Math.random() * 16777214) + 1)
+                .setFooter({ text: 'CyopnBot' })
+                .setTimestamp()
+              message.reply({ embeds: [embed] });
             }
           } else {
             const track = await player
@@ -69,6 +78,7 @@ module.exports.run = async (client, message, args, player) => {
             }
           }
         } catch (e) {
+          console.log(e)
           queue.destroy();
           embed = await createEmbed(
             "Error",
