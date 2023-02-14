@@ -11,10 +11,10 @@ module.exports.run = async (client, message, args, player) => {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
   } else {
-    let queue = player.getQueue(message.guild);
+    let queue = player.nodes.get(message.guild);
 
     if (queue == undefined) {
-      queue = player.createQueue(message.guild, {
+      queue = player.nodes.create(message.guild, {
         metadata: {
           channel: message.channel,
           vc: voicechannel.id

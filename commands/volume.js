@@ -4,7 +4,7 @@ module.exports.run = async (client, message, args, player) => {
     ? message.member.voice.channel
     : null;
 
-  const queue = player.getQueue(voicechannel.guild.id);
+  const queue = player.nodes.get(voicechannel.guild.id);
 
   if (voicechannel == null) {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
