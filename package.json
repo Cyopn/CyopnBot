@@ -5,15 +5,17 @@
     "amethyste-api": "^1.1.5",
     "axios": "^0.27.2",
     "discord-memes": "^1.2.9",
-    "discord-player": "^5.3.1",
+    "discord-player": "^6.0.0-dev.2",
     "discord-tts": "^1.2.2",
     "discord.js": "^14.2.0",
     "donutapi": "^0.1.6",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.3",
     "lyrics-finder": "^21.7.0",
     "megadb": "^3.4.0",
     "node-youtube-music": "^0.7.0",
     "opusscript": "^0.0.8",
+    "path": "^0.12.7",
+    "process": "^0.11.10",
     "star-labs": "^1.1.2",
     "ytdl-core": "^4.11.1"
   },
@@ -24,9 +26,8 @@
   "directories": {
     "lib": "lib"
   },
-  "devDependencies": {},
   "scripts": {
-    "start":"node index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
