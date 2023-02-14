@@ -7,10 +7,10 @@ module.exports.run = async (client, message, args, player) => {
     const rs = ex(`python ./lib/python/meme.py`, { encoding: "utf8" })
 
 
-    loadJson().then(a => {
+    loadJson().then(r => {
       const embed = new EmbedBuilder()
-      .setDescription(`**${a.title}**\nPublicado por ${a.author}. \nPedido por ${message.author}.`)
-      .setImage(a.url)
+      .setDescription(`**${r.title}**\nPublicado por ${r.author}. \nPedido por ${message.author}.`)
+      .setImage(r.url)
       .setFooter({ text: "CyopnBot" })
       .setTimestamp();
     message.reply({ embeds: [embed] });
