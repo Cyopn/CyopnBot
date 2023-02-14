@@ -1,22 +1,25 @@
 const { EmbedBuilder } = require("discord.js");
-const { getRed } = require("../lib/functions");
+const ex = require("child_process").execSync
+const { loadJson } = require("../lib/functions")
 
 module.exports.run = async (client, message, args, player) => {
   try {
-    let urlRed = await getRed("ChingaTuMadreNoko");
-    const { subreddit, title, url, author } = urlRed.data;
-    const embed = new EmbedBuilder()
-      .setTitle(`holis bonis`)
-      .setDescription(`**${title}.**\nPublicado en ${subreddit} por ${author}. \nPedido por ${message.author}.`)
-      .setImage(url)
+    const rs = ex(`python ./lib/python/meme.py`, { encoding: "utf8" })
+
+
+    loadJson().then(a => {
+      const embed = new EmbedBuilder()
+      .setDescription(`**${a.title}**\nPublicado por ${a.author}. \nPedido por ${message.author}.`)
+      .setImage(a.url)
       .setFooter({ text: "CyopnBot" })
       .setTimestamp();
     message.reply({ embeds: [embed] });
+  })
   } catch (e) {
     console.log(e);
   }
 };
 module.exports.config = {
   name: "meme",
-  aliases: ["mm"],
+  aliases: ["m"],
 };
