@@ -1,5 +1,9 @@
 const { EmbedBuilder } = require("discord.js");
 const db = require('megadb');
+let bu = new db.crearDB({
+    nombre: 'dataArtc',
+    carpeta: './database'
+})
 module.exports.run = async (client, message, args, player) => {
     try {
         let args1 = args.join(' ')
@@ -7,7 +11,6 @@ module.exports.run = async (client, message, args, player) => {
         let ct = args[1]
         let tt
         if (!obj) return message.channel.send('Ingrsa el objeto a comprar')
-        let bu = new db.crearDB("articulos")
         if (!bu.tiene(message.guild.id)) bu.establecer(message.guild.id, {})
         if (!bu.tiene(`${message.guild.id}.${message.author.id}`)) bu.establecer(`${message.guild.id}.${message.author.id}`, { dinero: 0, criko: 0, toston: 0, pbm: 0, pnm: 0, pdm: 0, jarron: 0, mlp: 0 })
         if (args1.includes('criko')) {

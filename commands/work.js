@@ -1,8 +1,11 @@
 const { EmbedBuilder } = require("discord.js");
 const db = require('megadb');
+let bu = new db.crearDB({
+    nombre: 'dataArtc',
+    carpeta: './database'
+})
 module.exports.run = async(client, message, args, player) => {
     try {
-        let bu = new db.crearDB("articulos")
         if (!bu.tiene(message.guild.id)) bu.establecer(message.guild.id, {})
         if (!bu.tiene(`${message.guild.id}.${message.author.id}`)) bu.establecer(`${message.guild.id}.${message.author.id}`, { dinero: 0, criko: 0, toston: 0, pbm: 0, tmvt: 0, pnm: 0, tmvtn: 0, pdm: 0, tlr: 0, jarron: 0, mlp: 0 })
         let swd = Math.floor(Math.random() * 5)
