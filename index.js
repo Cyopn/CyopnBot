@@ -5,6 +5,7 @@ let commands = new Collection();
 let aliases = new Collection();
 const fs = require("fs");
 const { Player } = require("discord-player");
+const { lvlFunc } = require("./lib/functions");
 const dotenv = require("dotenv").config();
 const config = process.env;
 
@@ -72,6 +73,7 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
+  lvlFunc(message)
   if (!message.guild || message.author.bot) return;
   if (message.content.indexOf(config.prefix) != 0) return;
   let args = message.content.slice(config.prefix.length).trim().split(" ");
