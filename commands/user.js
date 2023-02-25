@@ -2,12 +2,19 @@ const { EmbedBuilder } = require("discord.js");
 
 module.exports.run = async (client, message, args, player) => {
     let user = message.mentions.users.first() ? message.mentions.users.first() : message.author
-    message.guild.members.fetch().then(members => {
+    /* message.guild.members.fetch().then(members => {
         const online = members.filter((member) => !member.user?.bot && member.presence?.status != 'offline').map((member) => member);
         console.log(online)
         console.log(m)
-    })
+    }) */
 
+    let a=await message.guild
+
+    console.log(user.id)
+    /* message.guild.members.fetch().then(m=>{
+        
+    })
+ */
     /* if (!userm) {
         var userm = message.author;
         const embed = new EmbedBuilder()

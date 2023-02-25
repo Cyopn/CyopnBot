@@ -3,8 +3,7 @@ module.exports.run = async (client, message, args, player) => {
   let embed = new EmbedBuilder()
     .setTitle(`🏓 Pong!`)
     .setDescription(
-      `Latencia del bot: ${
-         message.createdTimestamp- Date.now()
+      `Latencia del bot: ${message.createdTimestamp - Date.now()
       }ms.\n Latencia del API: ${Math.round(client.ws.ping)}ms.`
     );
 
