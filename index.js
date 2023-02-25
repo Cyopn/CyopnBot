@@ -1,5 +1,5 @@
 const { GatewayIntentBits } = require("discord-api-types/v10");
-const { Collection, Client, EmbedBuilder } = require("discord.js");
+const { Collection, Client, EmbedBuilder, ActivityType } = require("discord.js");
 const path = require("path");
 let commands = new Collection();
 let aliases = new Collection();
@@ -58,10 +58,15 @@ fs.readdir("./commands/", (err, files) => {
   });
 });
 
+
 client.once("ready", () => {
   console.log(`${client.user.username} listo`);
+
+  const guilds = client.guilds.cache.map(guild => guild.name);
+  console.log(guilds)
+
   client.user.setPresence({
-    activities: [{ name: `nose`, type: 0, url: `www.instagram.com/Cyopn_` }],
+    activities: [{ name: `nose w - Presente en ${guilds.length} servidores`, type: ActivityType.Playing }],
     status: 'dnd',
   });
 });
@@ -116,19 +121,21 @@ player.on("trackAdd", (queue, track) => {
 });
 
 player.on("connectionError", (queue, error) => {
-  console.log(error)
-  let embed = new EmbedBuilder()
-    .setTitle(`Error de conexion`)
-    .setDescription(`${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`)
-    .setColor(Math.floor(Math.random() * 16777214) + 1)
-    .setFooter({ text: "CyopnBot" })
-    .setTimestamp();
-  queue.metadata.channel.send({ embeds: [embed] });
+  if (error.toString().includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
+    return
+  } else {
+    let embed = new EmbedBuilder()
+      .setTitle(`Error con el reproductor`)
+      .setDescription(`${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`)
+      .setColor(Math.floor(Math.random() * 16777214) + 1)
+      .setFooter({ text: "CyopnBot" })
+      .setTimestamp();
+    queue.metadata.channel.send({ embeds: [embed] });
+  }
 });
 
 player.on("error", (queue, error) => {
-  console.log(error)
-  if (error.includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
+  if (error.toString().includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
     return
   } else {
     let embed = new EmbedBuilder()
