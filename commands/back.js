@@ -33,18 +33,14 @@ module.exports.run = async (client, message, args, player) => {
         message.reply({ embeds: [embed] });
       } else {
         try {
-          const q = useQueue(message.guild.id)
-          const h = useHistory(message.guild.id)
-          console.log(await q.history.back())
-
-          if (!q.history.previousTrack) {
+          if (!queue.history.previousTrack) {
             embed = await createEmbed(
               "Reproductor",
               "No hay alguna cancion anterior en la lista de reproduccion"
             );
             message.reply({ embeds: [embed] });
           } else {
-            //await q.previous();
+            await queue.history.back();
             message.react("✅");
           }
         } catch (e) {

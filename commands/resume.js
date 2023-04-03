@@ -27,15 +27,16 @@ module.exports.run = async (client, message, args, player) => {
       }
 
     } else {
-      if (!queue.playing) {
-        embed = await createEmbed(
+      if (!queue.node.isPaused()) {
+        return message.reply("No hay nada pausado");
+        /* embed = await createEmbed(
           "Advertencia",
           "No se esta reproduciendo nada justo ahora"
         );
-        message.reply({ embeds: [embed] });
+        message.reply({ embeds: [embed] }); */
       } else {
         try {
-          const pause = queue.setPaused(false);
+          queue.node.resume();
           message.react("▶️");
         } catch (e) {
           embed = await createEmbed(

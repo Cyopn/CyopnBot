@@ -27,7 +27,7 @@ module.exports.run = async (client, message, args, player) => {
       }
 
     } else {
-      if (!queue.playing) {
+      if (!queue.node.isPlaying()) {
         embed = await createEmbed(
           "Advertencia",
           "No se esta reproduciendo nada justo ahora"
@@ -35,7 +35,7 @@ module.exports.run = async (client, message, args, player) => {
         message.reply({ embeds: [embed] });
       } else {
         try {
-          const pause = queue.setPaused(true);
+         queue.node.pause();
           message.react("⏸");
         } catch (e) {
           embed = await createEmbed(

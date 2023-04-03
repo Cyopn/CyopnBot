@@ -36,8 +36,7 @@ module.exports.run = async (client, message, args, player) => {
         message.reply({ embeds: [embed] });
       } else {
         try {
-          const q = useQueue(message.guild.id)
-          q.node.skip()
+          queue.node.skip()
           message.react("✅");
         } catch (e) {
           embed = await createEmbed(

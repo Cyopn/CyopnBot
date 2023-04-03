@@ -1,4 +1,3 @@
-const { useQueue } = require("discord-player");
 const { createEmbed } = require("../lib/functions");
 
 module.exports.run = async (client, message, args, player) => {
@@ -26,7 +25,6 @@ module.exports.run = async (client, message, args, player) => {
         );
         message.reply({ embeds: [embed] });
       }
-
     } else {
       if (!queue.isPlaying()) {
         embed = await createEmbed(
@@ -36,21 +34,23 @@ module.exports.run = async (client, message, args, player) => {
         message.reply({ embeds: [embed] });
       } else {
         try {
-          const q=useQueue(message.guild.id)
-          q.tracks.clear();
-          message.react("✅");
+          queue.delete();
+          embed = await createEmbed(
+            "Reproductor",
+            "Se ha detenido y eliminado la lista de reproduccion"
+          );
+          message.reply({ embeds: [embed] });
         } catch (e) {
           embed = await createEmbed(
             "Error",
-            "Ocurrio un error al intentar eliminar la lista de reproduccion, intenta de nuevo o contacta a soporte"
+            "Ocurrio un error al intentar detenerla reproduccion, intenta de nuevo o contacta a soporte"
           );
           message.reply({ embeds: [embed] });
-          console.log(e)
+          console.log(e);
         }
       }
     }
   }
-
 };
 module.exports.config = {
   name: "clearqueue",

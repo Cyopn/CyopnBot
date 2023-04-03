@@ -17,7 +17,7 @@ module.exports.run = async (client, message, args, player) => {
       queue = player.nodes.create(message.guild, {
         metadata: {
           channel: message.channel,
-          vc: voicechannel.id
+          vc: voicechannel.id,
         },
         selfDeaf: true,
         volume: 80,
@@ -25,6 +25,7 @@ module.exports.run = async (client, message, args, player) => {
         leaveOnEmptyCooldown: 300000,
         leaveOnEnd: true,
         leaveOnEndCooldown: 300000,
+        skipOnNoStream: true,
       });
     }
 
@@ -45,46 +46,56 @@ module.exports.run = async (client, message, args, player) => {
         try {
           if (!queue.connection) await queue.connect(voicechannel);
           if (query.includes("playlist")) {
-            const rs = await player
-              .search(query, {
-                requestedBy: message.member.id,
-              })
+            const rs = await player.search(query, {
+              requestedBy: message.member.id,
+            });
             if (rs.playlist) {
               if (!queue.node.isPlaying()) {
-                let r = rs.tracks
-                queue.addTrack(r)
-                queue.node.play()
+                let r = rs.tracks;
+                queue.addTrack(r);
+                queue.node.play();
               } else {
-                queue.addTrack(rs.tracks)
+                queue.addTrack(rs.tracks);
               }
             } else if (rs.playlist === null) {
               const embed = new EmbedBuilder()
                 .setThumbnail(server.iconURL())
                 .setTitle(server.name)
-                .setDescription(`La playlist no existe`)
+                .setDescription(`La playlist no existe o es privada`)
                 .setColor(Math.floor(Math.random() * 16777214) + 1)
-                .setFooter({ text: 'CyopnBot' })
-                .setTimestamp()
+                .setFooter({ text: "CyopnBot" })
+                .setTimestamp();
               message.reply({ embeds: [embed] });
             }
           } else {
-            const track = await player
-              .search(query, {
-                requestedBy: message.member.id,
-              })
-              .then((x) => x.tracks[0]);
-            if (!track) {
+            const track = await player.search(query, {
+              requestedBy: message.member.id,
+            });
+            if (!track.hasTracks) {
               embed = await createEmbed(
                 "Advertencia",
                 `No se encontro ningun resultado para **${query}**`
               );
               message.reply({ embeds: [embed] });
             } else {
-              queue.node.play(track)
+              //queue.node.play(track.tracks[0]);
+              player.play(voicechannel, track.tracks[0], {
+                metadata: {
+                  channel: message.channel,
+                  vc: voicechannel.id,
+                },
+                selfDeaf: true,
+                volume: 80,
+                leaveOnEmpty: true,
+                leaveOnEmptyCooldown: 300000,
+                leaveOnEnd: true,
+                leaveOnEndCooldown: 300000,
+                skipOnNoStream: true,
+              });
             }
           }
         } catch (e) {
-          console.log(e)
+          console.log(e);
           queue.delete();
           embed = await createEmbed(
             "Error",

@@ -1,4 +1,4 @@
-const { createEmbed } = require('../lib/functions');
+const { createEmbed } = require("../lib/functions");
 
 module.exports.run = async (client, message, args, player) => {
   let voicechannel = message.member.voice.channel
@@ -11,7 +11,7 @@ module.exports.run = async (client, message, args, player) => {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
   } else {
-    if ( queue == undefined || queue.metadata.vc != voicechannel.id) {
+    if (queue == undefined || queue.metadata.vc != voicechannel.id) {
       if (queue == undefined) {
         embed = await createEmbed(
           "Advertencia",
@@ -25,9 +25,8 @@ module.exports.run = async (client, message, args, player) => {
         );
         message.reply({ embeds: [embed] });
       }
-
     } else {
-      if (!queue.playing) {
+      if (!queue.isPlaying()) {
         embed = await createEmbed(
           "Advertencia",
           "No se esta reproduciendo nada justo ahora"
