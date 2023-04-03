@@ -1,6 +1,7 @@
 node_modules
-mega_databases
 package-lock.json
 .env
-Procfile
-test.js
+/.yarn
+.pnp.cjs
+.pnp.loader.mjs
+yarn.lock
