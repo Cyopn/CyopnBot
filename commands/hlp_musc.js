@@ -12,9 +12,9 @@ module.exports.run = async (client, message, args, player) => {
             { name: "Omitir", value: "(Uso: +skip), Omite la cancion en reproduccion" },
             { name: "Detener", value: "(Uso: +stop), Detiene la cancion en reproduccion y abandona el canal de voz" },
             { name: "Volumen", value: `(Uso: +volume \`numero entero\` ), Detiene la cancion en reproduccion` },
-            { name: 'Atras', value: '(Uso: +back), Regresa una cancion atras en la lista de reproduccion' },
+            { name: 'Atras', value: '(Uso: +back), Regresa una cancion atras en la lista de reproduccion `Comando aun en desarrollo`' },
             { name: 'Limpiar lista de reproduccion', value: '(Uso: +clearqueue), Eliminda todas las canciones en cola de reproduccion' },
-            { name: 'Saltar(Numero de canciones a omitir)', value: `(Uso: +jump \`Numero entero\`)` },
+            { name: 'Saltar(Numero de canciones a omitir)', value: `(Uso: +jump \`numero entero\`)` },
             { name: 'En reproduccion', value: '(Uso: +nowplaying), Devuelve informacion de la cancion en reproduccion' },
         )
         .setFooter({ text: "CyopnBot" })

@@ -11,14 +11,20 @@ module.exports.run = async (client, message, args, player) => {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
     message.reply({ embeds: [embed] });
   } else {
-    let queue = player.getQueue(message.guild);
+    let queue = player.nodes.get(message.guild);
 
     if (queue == undefined) {
-      queue = player.createQueue(message.guild, {
+      queue = player.nodes.create(message.guild, {
         metadata: {
           channel: message.channel,
           vc: voicechannel.id
-        }
+        },
+        selfDeaf: true,
+        volume: 80,
+        leaveOnEmpty: true,
+        leaveOnEmptyCooldown: 300000,
+        leaveOnEnd: true,
+        leaveOnEndCooldown: 300000,
       });
     }
 
@@ -44,12 +50,12 @@ module.exports.run = async (client, message, args, player) => {
                 requestedBy: message.member.id,
               })
             if (rs.playlist) {
-              if (!queue.playing) {
+              if (!queue.node.isPlaying()) {
                 let r = rs.tracks
-                queue.addTracks(r)
-                queue.play()
+                queue.addTrack(r)
+                queue.node.play()
               } else {
-                queue.addTracks(rs.tracks)
+                queue.addTrack(rs.tracks)
               }
             } else if (rs.playlist === null) {
               const embed = new EmbedBuilder()
@@ -74,12 +80,12 @@ module.exports.run = async (client, message, args, player) => {
               );
               message.reply({ embeds: [embed] });
             } else {
-              queue.play(track);
+              queue.node.play(track)
             }
           }
         } catch (e) {
           console.log(e)
-          queue.destroy();
+          queue.delete();
           embed = await createEmbed(
             "Error",
             `Ocurrio un error al intentar reproducir: \n${e}`

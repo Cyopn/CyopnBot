@@ -1,11 +1,12 @@
 const { createEmbed } = require('../lib/functions');
+const { useQueue } = require("discord-player")
 
 module.exports.run = async (client, message, args, player) => {
   let voicechannel = message.member.voice.channel
     ? message.member.voice.channel
     : null;
 
-  const queue = player.getQueue(voicechannel.guild.id);
+  const queue = player.nodes.get(voicechannel.guild.id);
 
   if (voicechannel == null) {
     embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
@@ -27,7 +28,7 @@ module.exports.run = async (client, message, args, player) => {
       }
 
     } else {
-      if (!queue.playing) {
+      if (!queue.node.isPlaying()) {
         embed = await createEmbed(
           "Advertencia",
           "No se esta reproduciendo nada justo ahora"
@@ -35,11 +36,9 @@ module.exports.run = async (client, message, args, player) => {
         message.reply({ embeds: [embed] });
       } else {
         try {
-          const ct = queue.current;
-          const sc = queue.skip();
-          if (sc) {
-            message.react("✅");
-          }
+          const q = useQueue(message.guild.id)
+          q.node.skip()
+          message.react("✅");
         } catch (e) {
           embed = await createEmbed(
             "Error",

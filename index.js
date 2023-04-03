@@ -1,6 +1,5 @@
 const { GatewayIntentBits } = require("discord-api-types/v10");
 const { Collection, Client, EmbedBuilder, ActivityType } = require("discord.js");
-const path = require("path");
 let commands = new Collection();
 let aliases = new Collection();
 const fs = require("fs");
@@ -8,19 +7,6 @@ const { Player } = require("discord-player");
 const { lvlFunc } = require("./lib/functions");
 const dotenv = require("dotenv").config();
 const config = process.env;
-
-// Hosting
-/* const express = require('express')
-const app = express();
-const port = 3000
-
-app.get('/', (req, res) => res.send('nose'))
-
-app.listen(port, () =>
-  console.log(`App listener: http://localhost:${port}`)
-); */
-
-// Hosting
 
 const client = new Client({
   intents: [
@@ -73,7 +59,7 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
-  lvlFunc(message)
+  await lvlFunc(message)
   if (!message.guild || message.author.bot) return;
   if (message.content.indexOf(config.prefix) != 0) return;
   let args = message.content.slice(config.prefix.length).trim().split(" ");
@@ -85,16 +71,16 @@ client.on("messageCreate", async (message) => {
     commandFile.run(client, message, args, player);
   } catch (e) {
     console.log(e)
-    return message.reply(`Un error ocurrio en ${command}: \n${e.message}`);
+    return message.reply(`Un error ocurrio al ejecutar el comando ${command}: \nDescripcion: \n${e.message}`);
   }
 });
 
-player.on("trackStart", (queue, track) => {
+player.events.on("playerStart", (queue, track) => {
   let { author, duration, source, views, title, requestedBy, url } = track;
   let embed = new EmbedBuilder()
     .setTitle(`Reproduciendo`)
     .setDescription(
-      `Estas escuchando ${title} en el canal de voz ${queue.connection.channel.name}.\nPedido por ${requestedBy}`
+      `Estas escuchando ${title} en el canal de voz ${queue.metadata.channel.guild.name}.\nPedido por ${requestedBy}`
     )
     .addFields(
       { name: "Autor", value: `${author}`, inline: true },
@@ -109,11 +95,11 @@ player.on("trackStart", (queue, track) => {
   queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("trackAdd", (queue, track) => {
+player.events.on("audioTrackAdd", (queue, track) => {
   let embed = new EmbedBuilder()
     .setTitle(`Reproduciendo`)
     .setDescription(
-      `Se agrego a la lista de reproduccion ${track.title} en el canal de voz ${queue.connection.channel.name}.\nPedido por ${track.requestedBy}`
+      `Se agrego a la lista de reproduccion ${track.title} en el canal de voz ${queue.metadata.channel.guild.name}.\nPedido por ${track.requestedBy}`
     )
     .setThumbnail(track.thumbnail)
     .setColor(Math.floor(Math.random() * 16777214) + 1)
@@ -122,9 +108,9 @@ player.on("trackAdd", (queue, track) => {
   queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("connectionError", (queue, error) => {
+player.events.on("error", (queue, error) => {
   if (error.toString().includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
-    return
+    console.log("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")
   } else {
     let embed = new EmbedBuilder()
       .setTitle(`Error con el reproductor`)
@@ -136,9 +122,9 @@ player.on("connectionError", (queue, error) => {
   }
 });
 
-player.on("error", (queue, error) => {
+player.events.on("playerError", (queue, error) => {
   if (error.toString().includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
-    return
+    console.log("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")
   } else {
     let embed = new EmbedBuilder()
       .setTitle(`Error con el reproductor`)
@@ -150,11 +136,11 @@ player.on("error", (queue, error) => {
   }
 });
 
-player.on("tracksAdd", (queue, tracks) => {
+player.events.on("audioTracksAdd", (queue, tracks) => {
   let embed = new EmbedBuilder()
     .setTitle(`Reproduciendo`)
     .setDescription(
-      `Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.connection.channel.name}.\nPedido por ${tracks[0].requestedBy}`
+      `Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.metadata.channel.guild.name}.\nPedido por ${tracks[0].requestedBy}`
     )
     .setThumbnail(tracks[0].thumbnail)
     .setColor(Math.floor(Math.random() * 16777214) + 1)
