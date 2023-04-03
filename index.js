@@ -1,5 +1,10 @@
 const { GatewayIntentBits } = require("discord-api-types/v10");
-const { Collection, Client, EmbedBuilder, ActivityType } = require("discord.js");
+const {
+  Collection,
+  Client,
+  EmbedBuilder,
+  ActivityType,
+} = require("discord.js");
 let commands = new Collection();
 let aliases = new Collection();
 const fs = require("fs");
@@ -17,7 +22,7 @@ const client = new Client({
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildPresences
+    GatewayIntentBits.GuildPresences,
   ],
 });
 
@@ -45,21 +50,25 @@ fs.readdir("./commands/", (err, files) => {
   });
 });
 
-
 client.once("ready", () => {
   console.log(`${client.user.username} listo`);
 
-  const guilds = client.guilds.cache.map(guild => guild.name);
-  console.log(guilds)
+  const guilds = client.guilds.cache.map((guild) => guild.name);
+  console.log(guilds);
 
   client.user.setPresence({
-    activities: [{ name: `nose w - Presente en ${guilds.length} servidores`, type: ActivityType.Playing }],
-    status: 'dnd',
+    activities: [
+      {
+        name: `nose w - Presente en ${guilds.length} servidores`,
+        type: ActivityType.Playing,
+      },
+    ],
+    status: "dnd",
   });
 });
 
 client.on("messageCreate", async (message) => {
-  await lvlFunc(message)
+  await lvlFunc(message);
   if (!message.guild || message.author.bot) return;
   if (message.content.indexOf(config.prefix) != 0) return;
   let args = message.content.slice(config.prefix.length).trim().split(" ");
@@ -70,8 +79,10 @@ client.on("messageCreate", async (message) => {
   try {
     commandFile.run(client, message, args, player);
   } catch (e) {
-    console.log(e)
-    return message.reply(`Un error ocurrio al ejecutar el comando ${command}: \nDescripcion: \n${e.message}`);
+    console.log(e);
+    return message.reply(
+      `Un error ocurrio al ejecutar el comando ${command}: \nDescripcion: \n${e.message}`
+    );
   }
 });
 
@@ -108,34 +119,19 @@ player.events.on("audioTrackAdd", (queue, track) => {
   queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.events.on("error", (queue, error) => {
-  if (error.toString().includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
-    console.log("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")
-  } else {
-    let embed = new EmbedBuilder()
-      .setTitle(`Error con el reproductor`)
-      .setDescription(`${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`)
-      .setColor(Math.floor(Math.random() * 16777214) + 1)
-      .setFooter({ text: "CyopnBot" })
-      .setTimestamp();
-    queue.metadata.channel.send({ embeds: [embed] });
-  }
+player.on("connectionError", (queue, error) => {
+  let embed = new EmbedBuilder()
+    .setTitle(`Error con el reproductor`)
+    .setDescription(
+      `${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`
+    )
+    .setColor(Math.floor(Math.random() * 16777214) + 1)
+    .setFooter({ text: "CyopnBot" })
+    .setTimestamp();
+  queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.events.on("playerError", (queue, error) => {
-  if (error.toString().includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
-    console.log("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")
-  } else {
-    let embed = new EmbedBuilder()
-      .setTitle(`Error con el reproductor`)
-      .setDescription(`${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`)
-      .setColor(Math.floor(Math.random() * 16777214) + 1)
-      .setFooter({ text: "CyopnBot" })
-      .setTimestamp();
-    queue.metadata.channel.send({ embeds: [embed] });
-  }
-});
-
+player.on("error", (queue, error) => {});
 player.events.on("audioTracksAdd", (queue, tracks) => {
   let embed = new EmbedBuilder()
     .setTitle(`Reproduciendo`)
@@ -147,6 +143,18 @@ player.events.on("audioTracksAdd", (queue, tracks) => {
     .setFooter({ text: "CyopnBot" })
     .setTimestamp();
 
+  queue.metadata.channel.send({ embeds: [embed] });
+});
+
+player.events.on("playerError", (queue, error) => {
+  let embed = new EmbedBuilder()
+    .setTitle(`Error con el reproductor`)
+    .setDescription(
+      `${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`
+    )
+    .setColor(Math.floor(Math.random() * 16777214) + 1)
+    .setFooter({ text: "CyopnBot" })
+    .setTimestamp();
   queue.metadata.channel.send({ embeds: [embed] });
 });
 
