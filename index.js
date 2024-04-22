@@ -1,167 +1,143 @@
-const { GatewayIntentBits } = require("discord-api-types/v10");
-const { Collection, Client, EmbedBuilder, ActivityType } = require("discord.js");
-const path = require("path");
-let commands = new Collection();
-let aliases = new Collection();
+const {
+	Client,
+	GatewayIntentBits,
+	Collection,
+	ActivityType,
+	EmbedBuilder,
+} = require("discord.js");
 const fs = require("fs");
-const { Player } = require("discord-player");
-const { lvlFunc } = require("./lib/functions");
-const dotenv = require("dotenv").config();
-const config = process.env;
+const { Player, QueryType } = require("discord-player");
+require("dotenv").config();
+const { token, prefix } = process.env;
+let command = new Collection();
+let alias = new Collection();
 
-// Hosting
-/* const express = require('express')
+const express = require("express");
+const bodyParser = require("body-parser");
+const { createEmbed } = require("./lib/functions");
 const app = express();
-const port = 3000
+const port = 3000;
 
-app.get('/', (req, res) => res.send('nose'))
+app.use(bodyParser.json());
+app.use(
+	bodyParser.urlencoded({
+		extended: true,
+	}),
+);
 
-app.listen(port, () =>
-  console.log(`App listener: http://localhost:${port}`)
-); */
-
-// Hosting
-
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildVoiceStates,
-    GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildPresences
-  ],
+app.get("/", (request, response) => {
+	response.json({ info: "Servidor en linea" });
 });
 
-const player = new Player(client, {
-  leaveOnEnd: false,
-  leaveOnEndCooldown: true,
-  leaveOnStop: false,
-  leaveOnEmpty: false,
-  leaveOnEmptyCooldown: 1000,
-  ytdlOptions: {
-    filter: "audioonly",
-  },
+app.listen(port, () => {
+	console.log(`Aplicacion oyendo el puerto ${port}.`);
+});
+
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.GuildPresences,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMembers,
+	],
 });
 
 fs.readdir("./commands/", (err, files) => {
-  if (!files) return;
-  let jsfile = files.filter((f) => f.split(".").pop() === "js");
-  if (jsfile.length <= 0) return console.log("No se encontro ningun comando");
-  jsfile.forEach((f) => {
-    let pull = require(`./commands/${f}`);
-    commands.set(pull.config.name, pull);
-    pull.config.aliases.forEach((alias) => {
-      aliases.set(alias, pull.config.name);
-    });
-  });
+	if (err) return console.error(err);
+	let jsfile = files.filter((f) => f.split(".").pop() === "js");
+	if (jsfile.length <= 0) return console.log("No se encontro ningun comando");
+	jsfile.forEach((f) => {
+		let pull = require(`./commands/${f}`);
+		command.set(pull.config.name, pull);
+		pull.config.alias.forEach((v) => {
+			alias.set(v, pull.config.name);
+		});
+	});
 });
 
+const player = new Player(client);
+player.extractors.loadDefault();
 
-client.once("ready", () => {
-  console.log(`${client.user.username} listo`);
-
-  const guilds = client.guilds.cache.map(guild => guild.name);
-  console.log(guilds)
-
-  client.user.setPresence({
-    activities: [{ name: `nose w - Presente en ${guilds.length} servidores`, type: ActivityType.Playing }],
-    status: 'dnd',
-  });
+client.once("ready", async () => {
+	console.log("Cliente listo");
+	const guilds = client.guilds.cache.map((guild) => guild.name);
+	client.user.setPresence({
+		activities: [
+			{
+				name: `nose w - Presente en ${guilds.length} servidores`,
+				type: ActivityType.Playing,
+			},
+		],
+		status: "dnd",
+	});
 });
 
-client.on("messageCreate", async (message) => {
-  lvlFunc(message)
-  if (!message.guild || message.author.bot) return;
-  if (message.content.indexOf(config.prefix) != 0) return;
-  let args = message.content.slice(config.prefix.length).trim().split(" ");
-  const command = args.shift().toLowerCase();
-  const commandFile =
-    commands.get(command) || commands.get(aliases.get(command));
-  if (!commandFile) return;
-  try {
-    commandFile.run(client, message, args, player);
-  } catch (e) {
-    console.log(e)
-    return message.reply(`Un error ocurrio en ${command}: \n${e.message}`);
-  }
+client.on("messageCreate", (message) => {
+	if (!message.guild || message.author.bot) return;
+	const msg = message.content;
+	if (msg.startsWith(prefix) && msg.length > 1) {
+		const args = msg.slice(prefix.length).trim().split(" ");
+		const cmd = args.shift().toLowerCase();
+		const cm = command.get(cmd) || command.get(alias.get(cmd));
+		try {
+			cm.run(client, message, args, player);
+		} catch (e) {
+			console.error("Error al ejecutar comando", e);
+		}
+	}
 });
 
-player.on("trackStart", (queue, track) => {
-  let { author, duration, source, views, title, requestedBy, url } = track;
-  let embed = new EmbedBuilder()
-    .setTitle(`Reproduciendo`)
-    .setDescription(
-      `Estas escuchando ${title} en el canal de voz ${queue.connection.channel.name}.\nPedido por ${requestedBy}`
-    )
-    .addFields(
-      { name: "Autor", value: `${author}`, inline: true },
-      { name: "Duracion", value: `${duration}`, inline: true },
-      { name: "Fuente", value: `[${source}](${url})`, inline: true },
-      { name: "Vistas", value: `${views}`, inline: true }
-    )
-    .setThumbnail(track.thumbnail)
-    .setColor(Math.floor(Math.random() * 16777214) + 1)
-    .setFooter({ text: "CyopnBot" })
-    .setTimestamp();
-  queue.metadata.channel.send({ embeds: [embed] });
+player.events.on("playerStart", (queue, track) => {
+	let { author, duration, source, views, title, requestedBy, url } = track;
+	let embed = new EmbedBuilder()
+		.setTitle(`Reproduciendo`)
+		.setDescription(
+			`Estas escuchando ${title} en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${requestedBy}`,
+		)
+		.addFields(
+			{ name: "Autor", value: `${author}`, inline: true },
+			{ name: "Duracion", value: `${duration}`, inline: true },
+			{ name: "Fuente", value: `[${source}](${url})`, inline: true },
+			{ name: "Vistas", value: `${views}`, inline: true },
+		)
+		.setThumbnail(track.thumbnail)
+		.setColor(Math.floor(Math.random() * 16777214) + 1)
+		.setFooter({ text: "CyopnBot" })
+		.setTimestamp();
+	queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("trackAdd", (queue, track) => {
-  let embed = new EmbedBuilder()
-    .setTitle(`Reproduciendo`)
-    .setDescription(
-      `Se agrego a la lista de reproduccion ${track.title} en el canal de voz ${queue.connection.channel.name}.\nPedido por ${track.requestedBy}`
-    )
-    .setThumbnail(track.thumbnail)
-    .setColor(Math.floor(Math.random() * 16777214) + 1)
-    .setFooter({ text: "CyopnBot" })
-    .setTimestamp();
-  queue.metadata.channel.send({ embeds: [embed] });
+player.events.on("audioTrackAdd", (queue, track) => {
+	let embed = new EmbedBuilder()
+		.setTitle(`Reproduciendo`)
+		.setDescription(
+			`Se agrego a la lista de reproduccion ${track.title} en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${track.requestedBy}`,
+		)
+		.setThumbnail(track.thumbnail)
+		.setColor(Math.floor(Math.random() * 16777214) + 1)
+		.setFooter({ text: "CyopnBot" })
+		.setTimestamp();
+	queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("connectionError", (queue, error) => {
-  if (error.toString().includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
-    return
-  } else {
-    let embed = new EmbedBuilder()
-      .setTitle(`Error con el reproductor`)
-      .setDescription(`${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`)
-      .setColor(Math.floor(Math.random() * 16777214) + 1)
-      .setFooter({ text: "CyopnBot" })
-      .setTimestamp();
-    queue.metadata.channel.send({ embeds: [embed] });
-  }
+player.events.on("audioTracksAdd", (queue, tracks) => {
+	let embed = new EmbedBuilder()
+		.setTitle(`Reproduciendo`)
+		.setDescription(
+			`Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${tracks[0].requestedBy}`,
+		)
+		.setThumbnail(tracks[0].thumbnail)
+		.setColor(Math.floor(Math.random() * 16777214) + 1)
+		.setFooter({ text: "CyopnBot" })
+		.setTimestamp();
+	queue.metadata.channel.send({ embeds: [embed] });
 });
 
-player.on("error", (queue, error) => {
-  if (error.toString().includes("Error [ERR_STREAM_PREMATURE_CLOSE]: Premature close")) {
-    return
-  } else {
-    let embed = new EmbedBuilder()
-      .setTitle(`Error con el reproductor`)
-      .setDescription(`${error}\nEscribe +soporte para obtener ayuda o vuelve a intentarlo`)
-      .setColor(Math.floor(Math.random() * 16777214) + 1)
-      .setFooter({ text: "CyopnBot" })
-      .setTimestamp();
-    queue.metadata.channel.send({ embeds: [embed] });
-  }
+player.events.on("error", (queue, error) => {
+	console.log(error.message);
 });
 
-player.on("tracksAdd", (queue, tracks) => {
-  let embed = new EmbedBuilder()
-    .setTitle(`Reproduciendo`)
-    .setDescription(
-      `Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.connection.channel.name}.\nPedido por ${tracks[0].requestedBy}`
-    )
-    .setThumbnail(tracks[0].thumbnail)
-    .setColor(Math.floor(Math.random() * 16777214) + 1)
-    .setFooter({ text: "CyopnBot" })
-    .setTimestamp();
-
-  queue.metadata.channel.send({ embeds: [embed] });
-});
-
-client.login(config.token);
+client.login(token);
