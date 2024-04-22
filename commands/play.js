@@ -1,96 +1,92 @@
-const { createEmbed } = require("../lib/functions");
+const { createEmbed } = require("../lib/functions.js");
+const { useQueue, Playlist } = require("discord-player");
+const ytdl = require("ytdl-core");
 
 module.exports.run = async (client, message, args, player) => {
-  const query = args.join(" ");
-  let embed = null;
-  let voicechannel = message.member.voice.channel
-    ? message.member.voice.channel
-    : null;
+	let queue = null;
+	let query = args.join(" ");
+	try {
+		const voiceChannel = message.member.voice.channel
+			? message.member.voice.channel
+			: null;
+		if (voiceChannel == null) {
+			await message.reply({
+				embeds: [
+					await createEmbed(
+						"Advertencia",
+						"Advertencia",
+						"Debes estar en un canal de voz.",
+					),
+				],
+			});
+		} else {
+			queue = useQueue(message.guild.id);
+			if (queue == undefined) {
+				queue = await player.nodes.create(voiceChannel.guild, {
+					leaveOnEnd: false,
+					leaveOnStop: false,
+					metadata: {
+						channel: message.channel,
+						vc: voiceChannel,
+					},
+				});
+			}
+			if (queue.metadata.vc.id !== voiceChannel.id)
+				return message.reply({
+					embeds: [
+						await createEmbed(
+							"Advertencia",
+							"Advertencia",
+							"Debes estar en el mismo canal de voz que yo.",
+						),
+					],
+				});
+			if (!query || query.length <= 0)
+				return message.reply({
+					embeds: [
+						await createEmbed(
+							"Advertencia",
+							"Advertencia",
+							"Debes ingresar una busqueda o un enlace.",
+						),
+					],
+				});
+			if (!queue.connection) await queue.connect(voiceChannel);
 
-  if (voicechannel == null) {
-    embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
-    message.reply({ embeds: [embed] });
-  } else {
-    let queue = player.getQueue(message.guild);
-
-    if (queue == undefined) {
-      queue = player.createQueue(message.guild, {
-        metadata: {
-          channel: message.channel,
-          vc: voicechannel.id
-        }
-      });
-    }
-
-    if (queue.metadata.vc != voicechannel.id) {
-      embed = await createEmbed(
-        "Advertencia",
-        "Debes estar en el mismo canal de voz que yo."
-      );
-      message.reply({ embeds: [embed] });
-    } else {
-      if (!query || query.length < 0) {
-        embed = await createEmbed(
-          "Advertencia",
-          "Dedes ingresar una busqueda."
-        );
-        message.reply({ embeds: [embed] });
-      } else {
-        try {
-          if (!queue.connection) await queue.connect(voicechannel);
-          if (query.includes("playlist")) {
-            const rs = await player
-              .search(query, {
-                requestedBy: message.member.id,
-              })
-            if (rs.playlist) {
-              if (!queue.playing) {
-                let r = rs.tracks
-                queue.addTracks(r)
-                queue.play()
-              } else {
-                queue.addTracks(rs.tracks)
-              }
-            } else if (rs.playlist === null) {
-              const embed = new EmbedBuilder()
-                .setThumbnail(server.iconURL())
-                .setTitle(server.name)
-                .setDescription(`La playlist no existe`)
-                .setColor(Math.floor(Math.random() * 16777214) + 1)
-                .setFooter({ text: 'CyopnBot' })
-                .setTimestamp()
-              message.reply({ embeds: [embed] });
-            }
-          } else {
-            const track = await player
-              .search(query, {
-                requestedBy: message.member.id,
-              })
-              .then((x) => x.tracks[0]);
-            if (!track) {
-              embed = await createEmbed(
-                "Advertencia",
-                `No se encontro ningun resultado para **${query}**`
-              );
-              message.reply({ embeds: [embed] });
-            } else {
-              queue.play(track);
-            }
-          }
-        } catch (e) {
-          console.log(e)
-          queue.destroy();
-          embed = await createEmbed(
-            "Error",
-            `Ocurrio un error al intentar reproducir: \n${e}`
-          );
-          message.reply({ embeds: [embed] });
-        }
-      }
-    }
-  }
+			const track = await player
+				.search(query, {
+					requestedBy: message.member.id,
+				})
+			if (!track)
+				return message.reply({
+					embeds: [
+						await createEmbed(
+							"Advertencia",
+							"Advertencia",
+							"No se pudo encontrar la canción.",
+						),
+					],
+				});
+			await queue.play(track);
+		}
+	} catch (e) {
+		console.log(e);
+		message.reply({
+			embeds: [
+				await createEmbed(
+					"Error",
+					"Error",
+					`Ocurrio un error al intentar reproducir: \n${e}`,
+				),
+			],
+		});
+	}
 };
+
 module.exports.config = {
-  name: "play",
-  aliases: ["p"],
+	name: `play`,
+	alias: [`p`],
+	type: `misc`,
+	description: ``,
+	fulldesc: ``,
 };

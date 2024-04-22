@@ -1,78 +1,104 @@
 const { EmbedBuilder } = require("discord.js");
-const { createEmbed } = require("../lib/functions");
+const { createEmbed } = require("../lib/functions.js");
+const { useQueue } = require("discord-player");
 
-module.exports.run = async (client, message, args, player) => {
-  let voicechannel = message.member.voice.channel
-    ? message.member.voice.channel
-    : null;
-
-  const queue = player.getQueue(voicechannel.guild.id);
-
-  if (voicechannel == null) {
-    embed = await createEmbed("Advertencia", "Debes Estar en un canal de voz.");
-    message.reply({ embeds: [embed] });
-  } else {
-    if ( queue == undefined || queue.metadata.vc != voicechannel.id) {
-      if (queue == undefined) {
-        embed = await createEmbed(
-          "Advertencia",
-          "No se esta reproduciendo nada justo ahora"
-        );
-        message.reply({ embeds: [embed] });
-      } else {
-        embed = await createEmbed(
-          "Advertencia",
-          "Debes estar en el mismo canal de voz que yo."
-        );
-        message.reply({ embeds: [embed] });
-      }
-
-    } else {
-      if (!queue.playing) {
-        embed = await createEmbed(
-          "Advertencia",
-          "No se esta reproduciendo nada justo ahora"
-        );
-        message.reply({ embeds: [embed] });
-      } else {
-        let page = parseInt(args.join(""));
-        if (args.join("") == "") page = 1;
-        try {
-          const pageStart = 10 * (page - 1);
-          const pageEnd = pageStart + 10;
-          const currentTrack = queue.current;
-          const tracks = queue.tracks.slice(pageStart, pageEnd).map((m, i) => {
-            return `${i + pageStart + 1}. **${m.title}** ([Fuente](${m.url}))`;
-          });
-          let embed = new EmbedBuilder()
-            .setTitle(`Lista de reproduccion`)
-            .setDescription(
-              `${tracks.join("\n")} ${queue.tracks.length > pageEnd
-                ? `\n...${queue.tracks.length - pageEnd} mas canciones`
-                : ""
-              }`
-            )
-            .addFields({
-              name: `Reproduciendo ahora`,
-              value: `${currentTrack.title}`,
-            })
-            .setColor(Math.floor(Math.random() * 16777214) + 1)
-            .setFooter({ text: "CyopnBot" })
-            .setTimestamp();
-          message.reply({ embeds: [embed] });
-        } catch (e) {
-          embed = await createEmbed(
-            "Error",
-            "Ocurrio un error al intentar pausar, intenta de nuevo o contacta a soporte"
-          );
-          message.reply({ embeds: [embed] });
-          console.log(e);
-        }
-      }
-    }
-  }
+module.exports.run = async (client, message, args) => {
+	try {
+		const voiceChannel = message.member.voice.channel
+			? message.member.voice.channel
+			: null;
+		const queue = await useQueue(message.guild.id);
+		if (voiceChannel == null) {
+			await message.reply({
+				embeds: [
+					await createEmbed(
+						"Advertencia",
+						"Advertencia",
+						"Debes estar en un canal de voz.",
+					),
+				],
+			});
+		} else {
+			if (queue == undefined) {
+				await message.reply({
+					embeds: [
+						await createEmbed(
+							"Advertencia",
+							"Advertencia",
+							"No se esta reproduciendo nada justo ahora.",
+						),
+					],
+				});
+			} else {
+				if (queue.metadata.vc.id !== voiceChannel.id) {
+					await message.reply({
+						embeds: [
+							await createEmbed(
+								"Advertencia",
+								"Advertencia",
+								"Debes estar en el mismo canal de voz que yo.",
+							),
+						],
+					});
+				} else {
+					const page = 1;
+					const pageStart = 10 * (page - 1);
+					const pageEnd = pageStart + 10;
+					const currentTrack = queue.currentTrack;
+					const tracks = queue.tracks
+						.toArray()
+						.slice(pageStart, pageEnd)
+						.map((track, i) => {
+							return `${i + 1 + pageStart}. [${track.title}](${
+								track.url
+							})`;
+						});
+					message.reply({
+						embeds: [
+							new EmbedBuilder()
+								.setTitle(`Lista de reproduccion`)
+								.setDescription(
+									`${tracks.join("\n")} ${
+										queue.tracks.length > pageEnd
+											? `\n...${
+													queue.tracks.length -
+													pageEnd
+											  } mas canciones`
+											: ""
+									}`,
+								)
+								.addFields({
+									name: `Reproduciendo ahora`,
+									value: `${currentTrack.title}`,
+								})
+								.setColor(
+									Math.floor(Math.random() * 16777214) + 1,
+								)
+								.setFooter({ text: "CyopnBot" })
+								.setTimestamp(),
+						],
+					});
+				}
+			}
+		}
+	} catch (e) {
+		console.log(e);
+		message.reply({
+			embeds: [
+				await createEmbed(
+					"Error",
+					"Error",
+					`Ocurrio un error al intentar reproducir: \n${e}`,
+				),
+			],
+		});
+	}
 };
+
 module.exports.config = {
-  name: "queue",
-  aliases: ["q"],
+	name: `queue`,
+	alias: [`q`],
+	type: ``,
+	description: ``,
+	fulldesc: ``,
 };
