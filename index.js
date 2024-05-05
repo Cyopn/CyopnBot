@@ -61,7 +61,7 @@ fs.readdir("./commands/", (err, files) => {
 const player = new Player(client);
 player.extractors.loadDefault();
 
-client.once("ready", async () => {
+client.once("ready", () => {
 	console.log("Cliente listo");
 	const guilds = client.guilds.cache.map((guild) => guild.name);
 	client.user.setPresence({

@@ -40,28 +40,41 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					let pro = queue.node.createProgressBar();
-					let pre = queue.node.getTimestamp();
-					let embed = new EmbedBuilder()
-						.setTitle(`Reproduciendo ahora`)
-						.setDescription(
-							`**${queue.currentTrack.title}** de ${
-								queue.currentTrack.author
-							} (\`${
-								pre.progress == "Infinity"
-									? "Live"
-									: pre.progress + "%"
-							}\`) `,
-						)
-						.addFields({
-							name: "\u200b",
-							value: `${pro.replace(/ 0:00/g, " ◉ LIVE")}`,
-						})
-						.setThumbnail(queue.currentTrack.thumbnail)
-						.setColor(Math.floor(Math.random() * 16777214) + 1)
-						.setFooter({ text: "CyopnBot" })
-						.setTimestamp();
-					message.reply({ embeds: [embed] });
+					if (queue.tracks.size >= 1) {
+						let pro = queue.node.createProgressBar();
+						let pre = queue.node.getTimestamp();
+						let embed = new EmbedBuilder()
+							.setTitle(`Reproduciendo ahora`)
+							.setDescription(
+								`**${queue.currentTrack.title}** de ${
+									queue.currentTrack.author
+								} (\`${
+									pre.progress == "Infinity"
+										? "Live"
+										: pre.progress + "%"
+								}\`) `,
+							)
+							.addFields({
+								name: "\u200b",
+								value: `${pro.replace(/ 0:00/g, " ◉ LIVE")}`,
+							})
+							.setThumbnail(queue.currentTrack.thumbnail)
+							.setColor(Math.floor(Math.random() * 16777214) + 1)
+							.setFooter({ text: "CyopnBot" })
+							.setTimestamp();
+						message.reply({ embeds: [embed] });
+					} else {
+						await message.reply({
+							embeds: [
+								await createEmbed(
+									"Advertencia",
+									"Advertencia",
+									"No se esta reproduciendo nada justo ahora.",
+								),
+							],
+						});
+					}
+					
 				}
 			}
 		}

@@ -40,8 +40,8 @@ module.exports.run = async (client, message, args) => {
 					});
 				} else {
 					if (queue.tracks.size >= 1) {
-						queue.node.skip();
-						await message.react("⏭️");
+                        await queue.delete();
+                        await message.react("🧹");
 					} else {
 						await message.reply({
 							embeds: [
@@ -71,8 +71,8 @@ module.exports.run = async (client, message, args) => {
 };
 
 module.exports.config = {
-	name: `skip`,
-	alias: [`sk`],
+	name: `clearqueue`,
+	alias: [`cq`],
 	type: ``,
 	description: ``,
 	fulldesc: ``,

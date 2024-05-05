@@ -41,43 +41,56 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					const page = 1;
-					const pageStart = 10 * (page - 1);
-					const pageEnd = pageStart + 10;
-					const currentTrack = queue.currentTrack;
-					const tracks = queue.tracks
-						.toArray()
-						.slice(pageStart, pageEnd)
-						.map((track, i) => {
-							return `${i + 1 + pageStart}. [${track.title}](${
-								track.url
-							})`;
+					if (queue.tracks.size >= 1) {
+						const page = 1;
+						const pageStart = 10 * (page - 1);
+						const pageEnd = pageStart + 10;
+						const currentTrack = queue.currentTrack;
+						const tracks = queue.tracks
+							.toArray()
+							.slice(pageStart, pageEnd)
+							.map((track, i) => {
+								return `${i + 1 + pageStart}. [${
+									track.title
+								}](${track.url})`;
+							});
+						message.reply({
+							embeds: [
+								new EmbedBuilder()
+									.setTitle(`Lista de reproduccion`)
+									.setDescription(
+										`${tracks.join("\n")} ${
+											queue.tracks.size > pageEnd
+												? `\n...${
+														queue.tracks.size -
+														pageEnd
+												  } mas canciones`
+												: ""
+										}`,
+									)
+									.addFields({
+										name: `Reproduciendo ahora`,
+										value: `${currentTrack.title}`,
+									})
+									.setColor(
+										Math.floor(Math.random() * 16777214) +
+											1,
+									)
+									.setFooter({ text: "CyopnBot" })
+									.setTimestamp(),
+							],
 						});
-					message.reply({
-						embeds: [
-							new EmbedBuilder()
-								.setTitle(`Lista de reproduccion`)
-								.setDescription(
-									`${tracks.join("\n")} ${
-										queue.tracks.length > pageEnd
-											? `\n...${
-													queue.tracks.length -
-													pageEnd
-											  } mas canciones`
-											: ""
-									}`,
-								)
-								.addFields({
-									name: `Reproduciendo ahora`,
-									value: `${currentTrack.title}`,
-								})
-								.setColor(
-									Math.floor(Math.random() * 16777214) + 1,
-								)
-								.setFooter({ text: "CyopnBot" })
-								.setTimestamp(),
-						],
-					});
+					} else {
+						message.reply({
+							embeds: [
+								await createEmbed(
+									"Advertencia",
+									"Advertencia",
+									"No se esta reproduciendo nada justo ahora.",
+								),
+							],
+						});
+					}
 				}
 			}
 		}
