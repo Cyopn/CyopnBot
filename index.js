@@ -6,7 +6,7 @@ const {
 	EmbedBuilder,
 } = require("discord.js");
 const fs = require("fs");
-const { Player, QueryType } = require("discord-player");
+const { Player} = require("discord-player");
 require("dotenv").config();
 const { token, prefix } = process.env;
 let command = new Collection();
@@ -14,7 +14,6 @@ let alias = new Collection();
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const { createEmbed } = require("./lib/functions");
 const app = express();
 const port = 3000;
 
