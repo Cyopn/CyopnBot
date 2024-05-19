@@ -85,7 +85,7 @@ module.exports.run = async (client, message, args) => {
 				await createEmbed(
 					"Error",
 					"Error",
-					`Ocurrio un error al intentar reproducir: \n${e}`,
+					`Ocurrio un error al intentar mostrar el mensaje: \n${e}`,
 				),
 			],
 		});
@@ -95,7 +95,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: `nowplaying`,
 	alias: [`np`],
-	type: ``,
-	description: ``,
-	fulldesc: ``,
+	type: `misc`,
+	description: `Muestra la cancion que se esta reproduciendo ahora.`,
+	fulldesc: `Comando que muestra la cancion que se esta reproduciendo ahora en el canal de voz donde te encuentras.`,
 };

@@ -63,7 +63,7 @@ module.exports.run = async (client, message, args) => {
 				await createEmbed(
 					"Error",
 					"Error",
-					`Ocurrio un error al intentar reproducir: \n${e}`,
+					`Ocurrio un error al intentar saltar la cancion en reproduccion: \n${e}`,
 				),
 			],
 		});
@@ -73,7 +73,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: `skip`,
 	alias: [`sk`],
-	type: ``,
-	description: ``,
-	fulldesc: ``,
+	type: `misc`,
+	description: `Salta a la siguiente cancion en la cola de reproduccion.`,
+	fulldesc: `Comando para saltar a la siguiente cancion en la cola de reproduccion en el canal de voz actual.`,
 };

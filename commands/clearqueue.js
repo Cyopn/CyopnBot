@@ -63,7 +63,7 @@ module.exports.run = async (client, message, args) => {
 				await createEmbed(
 					"Error",
 					"Error",
-					`Ocurrio un error al intentar reproducir: \n${e}`,
+					`Ocurrio un error al intentar limpiar la cola de reproduccion: \n${e}`,
 				),
 			],
 		});
@@ -73,7 +73,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: `clearqueue`,
 	alias: [`cq`],
-	type: ``,
-	description: ``,
-	fulldesc: ``,
+	type: `misc`,
+	description: `Limpia la cola de reproduccion.`,
+	fulldesc: `Comando para limpiar la cola de reproduccion en algun canal de voz.`,
 };

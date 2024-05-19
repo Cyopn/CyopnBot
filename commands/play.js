@@ -87,6 +87,6 @@ module.exports.config = {
 	name: `play`,
 	alias: [`p`],
 	type: `misc`,
-	description: ``,
-	fulldesc: ``,
+	description: `Reporoduce una canción con su enlace o escribiendo una busqueda.`,
+	fulldesc: `Comando para reproducir una canción con su enlace (youtube, deezer, soundcloud, etc) o escribiendo una busqueda.`,
 };

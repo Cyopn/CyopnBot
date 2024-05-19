@@ -23,7 +23,7 @@ module.exports.run = async (client, message, args) => {
 					),
 				],
 			});
-        attachments.forEach((attachment) => {
+		attachments.forEach((attachment) => {
 			message.guild.stickers
 				.create({
 					file: attachment,
@@ -71,7 +71,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: `sticker`,
 	alias: [`s`],
-	type: ``,
-	description: ``,
-	fulldesc: ``,
+	type: `misc`,
+	description: `Crea un sticker en el servidor.`,
+	fulldesc: `COmnado para crear un sticker en el servidor proporcionando una imagen.`,
 };

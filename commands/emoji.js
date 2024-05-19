@@ -70,7 +70,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: `emoji`,
 	alias: [`e`],
-	type: ``,
-	description: ``,
-	fulldesc: ``,
+	type: `misc`,
+	description: `Crear un emoji personalizado.`,
+	fulldesc: `Comando para crear un emoji personalizado en el servidor.`,
 };

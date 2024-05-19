@@ -17,10 +17,11 @@ Se deben sustituir los parentesis/corchetes segun corresponda.
 	let fields = [];
 	command.forEach((name) => {
 		const sr = command.indexOf(name);
-		if (type[sr] === "ign" || type[sr] === "admin") return;
+		if (type[sr] === "ign" || type[sr] === "admin" || type[sr] === "test")
+			return;
 		fields.push({
 			name: name,
-			value: `Alias: ${alias[sr].toString().replaceAll(",", ", ")}\n${desc[sr]}`,
+			value: `**Alias: ${alias[sr].toString().replaceAll(",", ", ")}**\n${desc[sr]}`,
 			inline: true,
 		});
 	});

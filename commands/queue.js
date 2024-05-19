@@ -101,7 +101,7 @@ module.exports.run = async (client, message, args) => {
 				await createEmbed(
 					"Error",
 					"Error",
-					`Ocurrio un error al intentar reproducir: \n${e}`,
+					`Ocurrio un error al intentar mostrar la cola de reproduccion: \n${e}`,
 				),
 			],
 		});
@@ -111,7 +111,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: `queue`,
 	alias: [`q`],
-	type: ``,
-	description: ``,
-	fulldesc: ``,
+	type: `misc`,
+	description: `Muestra la cola de reproduccion actual.`,
+	fulldesc: `Comando para mostrar la cola de reproduccion actual en el canal de voz.`,
 };

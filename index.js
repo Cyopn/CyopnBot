@@ -41,7 +41,6 @@ const client = new Client({
 		GatewayIntentBits.GuildVoiceStates,
 		GatewayIntentBits.GuildPresences,
 		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildMembers,
 	],
 });
 
@@ -82,6 +81,7 @@ client.on("messageCreate", (message) => {
 		const args = msg.slice(prefix.length).trim().split(" ");
 		const cmd = args.shift().toLowerCase();
 		const cm = command.get(cmd) || command.get(alias.get(cmd));
+		if (!cm) return;
 		try {
 			cm.run(client, message, args, player);
 		} catch (e) {

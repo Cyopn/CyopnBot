@@ -64,7 +64,7 @@ module.exports.run = async (client, message, args) => {
 				await createEmbed(
 					"Error",
 					"Error",
-					`Ocurrio un error al intentar reproducir: \n${e}`,
+					`Ocurrio un error al intentar pausar: \n${e}`,
 				),
 			],
 		});
@@ -74,7 +74,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: `pause`,
 	alias: [`ps`],
-	type: ``,
-	description: ``,
-	fulldesc: ``,
+	type: `misc`,
+	description: `Pausa la reproduccion actual.`,
+	fulldesc: `Comando para pausar la reproduccion actual.`,
 };

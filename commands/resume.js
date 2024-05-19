@@ -63,7 +63,7 @@ module.exports.run = async (client, message, args) => {
 				await createEmbed(
 					"Error",
 					"Error",
-					`Ocurrio un error al intentar reproducir: \n${e}`,
+					`Ocurrio un error al intentar reanudar la reproduccion: \n${e}`,
 				),
 			],
 		});
@@ -73,7 +73,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: `resume`,
 	alias: [`rs`],
-	type: ``,
-	description: ``,
-	fulldesc: ``,
+	type: `misc`,
+	description: `Continua con la reproduccion actual.`,
+	fulldesc: `Comando para continuar con la reproduccion actual en el canal de voz.`,
 };
