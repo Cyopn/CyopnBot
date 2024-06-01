@@ -40,7 +40,7 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.tracks.size >= 1 && queue.node.isPlaying()) {
+					if (queue.node.isPlaying() && queue.node.isPlaying()) {
 						const v = parseInt(args.join(""));
 						if (!v || isNaN(v)) {
 							message.reply({

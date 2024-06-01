@@ -40,7 +40,7 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.tracks.size >= 1) {
+					if (queue.node.isPlaying()) {
 						let pro = queue.node.createProgressBar();
 						let pre = queue.node.getTimestamp();
 						let embed = new EmbedBuilder()
@@ -74,7 +74,6 @@ module.exports.run = async (client, message, args) => {
 							],
 						});
 					}
-					
 				}
 			}
 		}

@@ -39,7 +39,7 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.tracks.size >= 1) {
+					if (queue.node.isPlaying()) {
 						queue.node.skip();
 						await message.react("⏭️");
 					} else {

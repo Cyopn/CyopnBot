@@ -41,7 +41,7 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.tracks.size >= 1) {
+					if (queue.node.isPlaying()) {
 						const page = 1;
 						const pageStart = 10 * (page - 1);
 						const pageEnd = pageStart + 10;

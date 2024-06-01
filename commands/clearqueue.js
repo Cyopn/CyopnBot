@@ -39,9 +39,9 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.tracks.size >= 1) {
-                        await queue.delete();
-                        await message.react("🧹");
+					if (queue.node.isPlaying()) {
+						await queue.delete();
+						await message.react("🧹");
 					} else {
 						await message.reply({
 							embeds: [
