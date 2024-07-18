@@ -6,7 +6,7 @@ const {
 	EmbedBuilder,
 } = require("discord.js");
 const fs = require("fs");
-const { Player} = require("discord-player");
+const { Player } = require("discord-player");
 require("dotenv").config();
 const { token, prefix } = process.env;
 let command = new Collection();
@@ -57,7 +57,7 @@ fs.readdir("./commands/", (err, files) => {
 });
 
 const player = new Player(client);
-player.extractors.loadDefault();
+player.extractors.loadDefault((ext) => ext !== 'YouTubeExtractor' | 'SpotifyExtractor');
 
 client.once("ready", () => {
 	console.log("Cliente listo");
