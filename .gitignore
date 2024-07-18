@@ -1,9 +1,5 @@
 node_modules
-mega_databases
 package-lock.json
 .env
-Procfile
-test.js
-commands.old
-lib.old
-index.old.js
+test.*
+template.js
