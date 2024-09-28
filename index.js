@@ -8,6 +8,7 @@ const {
 const fs = require("fs");
 const { Player } = require("discord-player");
 const { YoutubeiExtractor } = require("discord-player-youtubei")
+const { SpotifyExtractor, SoundCloudExtractor } = require("@discord-player/extractor")
 require("dotenv").config();
 const { token, prefix } = process.env;
 let command = new Collection();
@@ -59,6 +60,8 @@ fs.readdir("./commands/", (err, files) => {
 
 const player = new Player(client);
 player.extractors.register(YoutubeiExtractor, {})
+player.extractors.register(SpotifyExtractor, {})
+player.extractors.register(SoundCloudExtractor, {})
 
 client.once("ready", () => {
 	console.log("Cliente listo");
