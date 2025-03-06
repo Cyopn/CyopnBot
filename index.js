@@ -10,14 +10,13 @@ const { Player } = require("discord-player");
 const { YoutubeiExtractor } = require("discord-player-youtubei")
 const { SpotifyExtractor, SoundCloudExtractor } = require("@discord-player/extractor")
 require("dotenv").config();
-const { token, prefix } = process.env;
+const { token, prefix, port } = process.env;
 let command = new Collection();
 let alias = new Collection();
 
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const port = 3000;
 
 app.use(bodyParser.json());
 app.use(
