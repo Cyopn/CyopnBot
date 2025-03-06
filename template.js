@@ -1,7 +1,7 @@
-const {createEmbed }=require("../lib/functions")
+const { createEmbed } = require("../lib/functions")
 module.exports.run = async (client, message, args) => {
 	try {
-		
+
 	} catch (e) {
 		console.log(e);
 		message.reply({

@@ -3,7 +3,7 @@ require("dotenv").config();
 const { prefix, owner } = process.env;
 const { getCommands } = require("../lib/functions.js");
 module.exports.run = async (client, message, args) => {
-	const { command, alias, type, desc, fulldesc } = await getCommands();
+	const commands = await getCommands();
 	let txt = `*Comandos* 
 *Prefijo*: [  ${prefix}  ] 
 _yo_ : https://instagram.com/Cyopn_
@@ -15,24 +15,22 @@ Se deben sustituir los parentesis/corchetes segun corresponda.
 
 *Comandos disponibles*:`;
 	let fields = [];
-	command.forEach((name) => {
-		const sr = command.indexOf(name);
-		if (type[sr] === "ign" || type[sr] === "admin" || type[sr] === "test")
+	commands.forEach((cmd) => {
+		if (cmd.type === "ign" || cmd.type === "admin" || cmd.type === "test")
 			return;
 		fields.push({
-			name: name,
-			value: `**Alias: ${alias[sr].toString().replaceAll(",", ", ")}**\n${desc[sr]}`,
-			inline: true,
-		});
+			name: cmd.name,
+			value: `**Alias: ${cmd.alias.toString().replaceAll(",", ", ")}**\n${cmd.description}`,
+			inline: true
+		})
 	});
 	let embed = new EmbedBuilder()
 		.setTitle("CyopnBot")
-		.setDescription(txt)
 		.addFields(fields)
+		.setDescription(txt)
 		.setFooter({ text: "CyopnBot" })
-		.setColor(Math.floor(Math.random() * 16777214) + 1)
+		.setColor("Random")
 		.setTimestamp();
-
 	message.reply({ embeds: [embed] });
 };
 

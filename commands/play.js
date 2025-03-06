@@ -5,16 +5,6 @@ module.exports.run = async (client, message, args, player) => {
 	let queue = null;
 	let query = args.join(" ");
 	const reg = new RegExp(/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/img)
-
-	/* if (reg.test(query)) return await message.reply({
-		embeds: [
-			await createEmbed(
-				"Advertencia",
-				"Advertencia",
-				"No se permiten enlaces de youtube, intenta ingresar una busqueda.",
-			),
-		],
-	}); */
 	try {
 		const voiceChannel = message.member.voice.channel
 			? message.member.voice.channel
