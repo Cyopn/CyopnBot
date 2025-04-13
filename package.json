@@ -1,12 +1,13 @@
 {
   "dependencies": {
     "@discord-player/extractor": "^4.5.1",
-    "axios": "^1.8.1",
+    "axios": "^1.8.4",
+    "bgutils-js": "^3.2.0",
     "body-parser": "^1.20.3",
     "discord-player": "^6.7.1",
-    "discord-player-youtubei": "^1.4.2",
+    "discord-player-youtubei": "^1.4.5",
     "discord.js": "^14.18.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "ko-sleep": "^1.1.4",
     "mediaplex": "^0.0.9"
