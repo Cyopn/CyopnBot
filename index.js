@@ -87,6 +87,30 @@ client.on("messageCreate", (message) => {
 	}
 });
 
+client.on("voiceStateUpdate", async (oldState, newState) => {
+	const queue = player.getQueue(newState.guild.id);
+	if (!queue || !queue.metadata || !queue.metadata.vc) return;
+
+	const queueChannelId = queue.metadata.vc.id;
+	const changedQueueChannel = oldState.channelId === queueChannelId || newState.channelId === queueChannelId;
+	if (!changedQueueChannel) return;
+
+	if (oldState.id === client.user.id && oldState.channelId === queueChannelId && !newState.channelId) {
+		player.destroyQueue(newState.guild.id);
+		return;
+	}
+
+	if (!player.shouldLeaveBecauseAlone(queue)) return;
+
+	player.leave(newState.guild.id);
+	try {
+		await queue.metadata.channel.send({
+			content: "No quedaba nadie en el canal de voz, asi que sali automaticamente.",
+		});
+	} catch {
+	}
+});
+
 player.events.on("playerStart", (queue, track) => {
 	let { author, duration, source, views, title, requestedBy, url } = track;
 	const requestedByText = requestedBy ? `<@${requestedBy}>` : "Desconocido";
