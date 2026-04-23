@@ -6,9 +6,7 @@ const {
 	EmbedBuilder,
 } = require("discord.js");
 const fs = require("fs");
-const { Player } = require("discord-player");
-const { YoutubeiExtractor } = require("discord-player-youtubei")
-const { SpotifyExtractor, SoundCloudExtractor } = require("@discord-player/extractor")
+const { MusicManager } = require("./lib/musicPlayer");
 require("dotenv").config();
 const { token, prefix, port } = process.env;
 let command = new Collection();
@@ -57,12 +55,9 @@ fs.readdir("./commands/", (err, files) => {
 	});
 });
 
-const player = new Player(client);
-player.extractors.register(YoutubeiExtractor, {})
-player.extractors.register(SpotifyExtractor, {})
-player.extractors.register(SoundCloudExtractor, {})
+const player = new MusicManager(client);
 
-client.once("ready", () => {
+client.once("clientReady", () => {
 	console.log("Cliente listo");
 	const guilds = client.guilds.cache.map((guild) => guild.name);
 	client.user.setPresence({
@@ -94,10 +89,11 @@ client.on("messageCreate", (message) => {
 
 player.events.on("playerStart", (queue, track) => {
 	let { author, duration, source, views, title, requestedBy, url } = track;
+	const requestedByText = requestedBy ? `<@${requestedBy}>` : "Desconocido";
 	let embed = new EmbedBuilder()
 		.setTitle(`Reproduciendo`)
 		.setDescription(
-			`Estas escuchando ${title} en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${requestedBy}`,
+			`Estas escuchando ${title} en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${requestedByText}`,
 		)
 		.addFields(
 			{ name: "Autor", value: `${author}`, inline: true },
@@ -105,7 +101,7 @@ player.events.on("playerStart", (queue, track) => {
 			{ name: "Fuente", value: `[${source}](${url})`, inline: true },
 			{ name: "Vistas", value: `${views}`, inline: true },
 		)
-		.setThumbnail(track.thumbnail)
+		.setThumbnail(track.thumbnail || null)
 		.setColor(Math.floor(Math.random() * 16777214) + 1)
 		.setFooter({ text: "CyopnBot" })
 		.setTimestamp();
@@ -113,12 +109,13 @@ player.events.on("playerStart", (queue, track) => {
 });
 
 player.events.on("audioTrackAdd", (queue, track) => {
+	const requestedByText = track.requestedBy ? `<@${track.requestedBy}>` : "Desconocido";
 	let embed = new EmbedBuilder()
 		.setTitle(`Reproduciendo`)
 		.setDescription(
-			`Se agrego a la lista de reproduccion ${track.title} en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${track.requestedBy}`,
+			`Se agrego a la lista de reproduccion ${track.title} en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${requestedByText}`,
 		)
-		.setThumbnail(track.thumbnail)
+		.setThumbnail(track.thumbnail || null)
 		.setColor(Math.floor(Math.random() * 16777214) + 1)
 		.setFooter({ text: "CyopnBot" })
 		.setTimestamp();
@@ -126,12 +123,13 @@ player.events.on("audioTrackAdd", (queue, track) => {
 });
 
 player.events.on("audioTracksAdd", (queue, tracks) => {
+	const requestedByText = tracks[0]?.requestedBy ? `<@${tracks[0].requestedBy}>` : "Desconocido";
 	let embed = new EmbedBuilder()
 		.setTitle(`Reproduciendo`)
 		.setDescription(
-			`Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${tracks[0].requestedBy}`,
+			`Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${requestedByText}`,
 		)
-		.setThumbnail(tracks[0].thumbnail)
+		.setThumbnail(tracks[0].thumbnail || null)
 		.setColor(Math.floor(Math.random() * 16777214) + 1)
 		.setFooter({ text: "CyopnBot" })
 		.setTimestamp();
@@ -139,7 +137,7 @@ player.events.on("audioTracksAdd", (queue, tracks) => {
 });
 
 player.events.on("error", (queue, error) => {
-	console.log(error.message);
+	console.error("[MusicPlayerError]", error);
 });
 
 client.login(token);

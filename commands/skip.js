@@ -1,11 +1,10 @@
 const { createEmbed } = require("../lib/functions.js");
-const { useQueue } = require("discord-player");
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, player) => {
 	try {
 		const voiceChannel = message.member.voice.channel
 			? message.member.voice.channel
 			: null;
-		const queue = await useQueue(message.guild.id);
+		const queue = player.getQueue(message.guild.id);
 		if (voiceChannel == null) {
 			await message.reply({
 				embeds: [
@@ -39,8 +38,8 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.node.isPlaying()) {
-						queue.node.skip();
+					if (queue.currentTrack) {
+						player.skip(queue);
 						await message.react("⏭️");
 					} else {
 						await message.reply({

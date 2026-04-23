@@ -1,13 +1,12 @@
 const { EmbedBuilder } = require("discord.js");
 const { createEmbed } = require("../lib/functions.js");
-const { useQueue } = require("discord-player");
 
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, player) => {
 	try {
 		const voiceChannel = message.member.voice.channel
 			? message.member.voice.channel
 			: null;
-		const queue = await useQueue(message.guild.id);
+		const queue = player.getQueue(message.guild.id);
 		if (voiceChannel == null) {
 			await message.reply({
 				embeds: [
@@ -41,40 +40,36 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.node.isPlaying()) {
+					if (queue.currentTrack || queue.tracks.length > 0) {
 						const page = 1;
 						const pageStart = 10 * (page - 1);
 						const pageEnd = pageStart + 10;
 						const currentTrack = queue.currentTrack;
 						const tracks = queue.tracks
-							.toArray()
 							.slice(pageStart, pageEnd)
 							.map((track, i) => {
-								return `${i + 1 + pageStart}. [${
-									track.title
-								}](${track.url})`;
+								return `${i + 1 + pageStart}. [${track.title
+									}](${track.url})`;
 							});
 						message.reply({
 							embeds: [
 								new EmbedBuilder()
 									.setTitle(`Lista de reproduccion`)
 									.setDescription(
-										`${tracks.join("\n")} ${
-											queue.tracks.size > pageEnd
-												? `\n...${
-														queue.tracks.size -
-														pageEnd
-												  } mas canciones`
-												: ""
+										`${tracks.length ? tracks.join("\n") : "Sin canciones en cola."} ${queue.tracks.length > pageEnd
+											? `\n...${queue.tracks.length -
+											pageEnd
+											} mas canciones`
+											: ""
 										}`,
 									)
 									.addFields({
 										name: `Reproduciendo ahora`,
-										value: `${currentTrack.title}`,
+										value: `${currentTrack ? currentTrack.title : "Nada ahora"}`,
 									})
 									.setColor(
 										Math.floor(Math.random() * 16777214) +
-											1,
+										1,
 									)
 									.setFooter({ text: "CyopnBot" })
 									.setTimestamp(),

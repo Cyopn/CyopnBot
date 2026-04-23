@@ -1,12 +1,10 @@
 const { createEmbed } = require("../lib/functions.js");
-const { EmbedBuilder } = require("discord.js");
-const { useQueue } = require("discord-player");
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, player) => {
 	try {
 		const voiceChannel = message.member.voice.channel
 			? message.member.voice.channel
 			: null;
-		const queue = await useQueue(message.guild.id);
+		const queue = player.getQueue(message.guild.id);
 		if (voiceChannel == null) {
 			await message.reply({
 				embeds: [
@@ -40,7 +38,7 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.node.isPlaying() && queue.node.isPlaying()) {
+					if (queue.currentTrack) {
 						const v = parseInt(args.join(""));
 						if (!v || isNaN(v)) {
 							message.reply({
@@ -48,7 +46,7 @@ module.exports.run = async (client, message, args) => {
 									await createEmbed(
 										"random",
 										"Reproductor",
-										`El volumen justo ahora es ${queue.node.volume}, si deseas cambiarlo, escribe un numero entre 0 y 100.`,
+										`El volumen justo ahora es ${queue.volume}, si deseas cambiarlo, escribe un numero entre 0 y 100.`,
 									),
 								],
 							});
@@ -64,9 +62,7 @@ module.exports.run = async (client, message, args) => {
 									],
 								});
 							} else {
-								const sc = queue.node.setVolume(
-									parseInt(args[0]),
-								);
+								const sc = player.setVolume(queue, parseInt(args[0]));
 								if (sc) {
 									message.react("👍");
 								}

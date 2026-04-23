@@ -1,10 +1,17 @@
 const { createEmbed } = require("../lib/functions.js");
-const { useQueue, Playlist } = require("discord-player");
+
+const isPlaylistLikeQuery = (query) => {
+	const value = String(query || "").toLowerCase();
+	return (
+		(value.includes("youtube.com") && value.includes("list=")) ||
+		value.includes("spotify.com/playlist/") ||
+		value.includes("spotify.com/album/")
+	);
+};
 
 module.exports.run = async (client, message, args, player) => {
-	let queue = null;
 	let query = args.join(" ");
-	const reg = new RegExp(/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/img)
+	let processingMessage = null;
 	try {
 		const voiceChannel = message.member.voice.channel
 			? message.member.voice.channel
@@ -20,18 +27,8 @@ module.exports.run = async (client, message, args, player) => {
 				],
 			});
 		} else {
-			queue = useQueue(message.guild.id);
-			if (queue == undefined) {
-				queue = await player.nodes.create(voiceChannel.guild, {
-					leaveOnEnd: false,
-					leaveOnStop: false,
-					metadata: {
-						channel: message.channel,
-						vc: voiceChannel,
-					},
-				});
-			}
-			if (queue.metadata.vc.id !== voiceChannel.id)
+			const queue = player.getQueue(message.guild.id);
+			if (queue && queue.metadata.vc.id !== voiceChannel.id)
 				return message.reply({
 					embeds: [
 						await createEmbed(
@@ -51,32 +48,71 @@ module.exports.run = async (client, message, args, player) => {
 						),
 					],
 				});
-			if (!queue.connection) await queue.connect(voiceChannel);
 
-			const track = await player
-				.search(query, {
-					requestedBy: message.member.id,
-				})
-			if (!track)
+			if (isPlaylistLikeQuery(query)) {
+				processingMessage = await message.reply({
+					embeds: [
+						await createEmbed(
+							"random",
+							"Reproductor",
+							"Procesando playlist, esto puede tardar unos segundos...",
+						),
+					],
+				});
+			}
+
+			const result = await player.enqueue(
+				message.guild,
+				{ channel: message.channel, vc: voiceChannel },
+				voiceChannel,
+				query,
+				message.member.id,
+			);
+			if (!result.addedTracks.length)
 				return message.reply({
 					embeds: [
 						await createEmbed(
 							"Advertencia",
 							"Advertencia",
-							"No se pudo encontrar la canción.",
+							"No se pudo encontrar contenido reproducible (puede que los videos esten caidos o no disponibles).",
 						),
 					],
 				});
-			await queue.play(track);
+
+			if (processingMessage) {
+				await processingMessage.edit({
+					embeds: [
+						await createEmbed(
+							"random",
+							"Reproductor",
+							`Playlist procesada. Se agregaron ${result.addedTracks.length} canciones a la cola.`,
+						),
+					],
+				});
+			}
 		}
 	} catch (e) {
 		console.log(e);
+		const details = e && e.message ? e.message : String(e);
+		const shortDetails = details.length > 600 ? `${details.slice(0, 600)}...` : details;
+		if (processingMessage) {
+			await processingMessage.edit({
+				embeds: [
+					await createEmbed(
+						"Error",
+						"Error",
+						`Ocurrio un error al procesar la playlist.\n${shortDetails}`,
+					),
+				],
+			});
+			return;
+		}
 		message.reply({
 			embeds: [
 				await createEmbed(
 					"Error",
 					"Error",
-					`Ocurrio un error al intentar reproducir: \n${e}`,
+					`Ocurrio un error al intentar reproducir.\n${shortDetails}`,
 				),
 			],
 		});

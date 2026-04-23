@@ -1,12 +1,11 @@
 const { createEmbed } = require("../lib/functions.js");
 const { EmbedBuilder } = require("discord.js");
-const { useQueue } = require("discord-player");
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, player) => {
 	try {
 		const voiceChannel = message.member.voice.channel
 			? message.member.voice.channel
 			: null;
-		const queue = await useQueue(message.guild.id);
+		const queue = player.getQueue(message.guild.id);
 		if (voiceChannel == null) {
 			await message.reply({
 				embeds: [
@@ -40,25 +39,22 @@ module.exports.run = async (client, message, args) => {
 						],
 					});
 				} else {
-					if (queue.node.isPlaying()) {
-						let pro = queue.node.createProgressBar();
-						let pre = queue.node.getTimestamp();
+					if (queue.currentTrack) {
+						let progress = player.getProgress(queue);
 						let embed = new EmbedBuilder()
 							.setTitle(`Reproduciendo ahora`)
 							.setDescription(
-								`**${queue.currentTrack.title}** de ${
-									queue.currentTrack.author
-								} (\`${
-									pre.progress == "Infinity"
-										? "Live"
-										: pre.progress + "%"
+								`**${queue.currentTrack.title}** de ${queue.currentTrack.author
+								} (\`${progress.percent == "Infinity"
+									? "Live"
+									: progress.percent + "%"
 								}\`) `,
 							)
 							.addFields({
 								name: "\u200b",
-								value: `${pro.replace(/ 0:00/g, " ◉ LIVE")}`,
+								value: `${progress.bar}`,
 							})
-							.setThumbnail(queue.currentTrack.thumbnail)
+							.setThumbnail(queue.currentTrack.thumbnail || null)
 							.setColor(Math.floor(Math.random() * 16777214) + 1)
 							.setFooter({ text: "CyopnBot" })
 							.setTimestamp();
