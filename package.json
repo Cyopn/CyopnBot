@@ -7,6 +7,7 @@
     "discord.js": "^14.26.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "google-tts-api": "^2.0.2",
     "ko-sleep": "^1.1.4",
     "opusscript": "^0.0.8",
     "yt-dlp-exec": "^1.0.2"
