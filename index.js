@@ -5,6 +5,7 @@ const {
 	ActivityType,
 	EmbedBuilder,
 } = require("discord.js");
+const { createEmbed } = require("./lib/functions.js");
 const fs = require("fs");
 const { MusicManager } = require("./lib/musicPlayer");
 require("dotenv").config();
@@ -104,14 +105,17 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
 	player.leave(newState.guild.id);
 	try {
-		await queue.metadata.channel.send({
-			content: "No quedaba nadie en el canal de voz, asi que sali automaticamente.",
-		});
+		const embed = await createEmbed(
+			"random",
+			"Reproductor",
+			"No quedaba nadie en el canal de voz, asi que sali automaticamente.",
+		);
+		await queue.metadata.channel.send({ embeds: [embed] });
 	} catch {
 	}
 });
 
-player.events.on("playerStart", (queue, track) => {
+player.events.on("playerStart", async (queue, track) => {
 	let { author, duration, source, views, title, requestedBy, url } = track;
 	const requestedByText = requestedBy ? `<@${requestedBy}>` : "Desconocido";
 	let embed = new EmbedBuilder()
@@ -129,13 +133,27 @@ player.events.on("playerStart", (queue, track) => {
 		.setColor(Math.floor(Math.random() * 16777214) + 1)
 		.setFooter({ text: "CyopnBot" })
 		.setTimestamp();
-	queue.metadata.channel.send({ embeds: [embed] });
+
+	try {
+		const channel = queue.metadata.channel;
+		if (queue.nowPlayingMessageId && queue.nowPlayingChannelId === channel.id) {
+			const message = await channel.messages.fetch(queue.nowPlayingMessageId);
+			await message.edit({ embeds: [embed] });
+			return;
+		}
+
+		const sent = await channel.send({ embeds: [embed] });
+		queue.nowPlayingMessageId = sent.id;
+		queue.nowPlayingChannelId = channel.id;
+	} catch {
+	}
 });
 
 player.events.on("audioTrackAdd", (queue, track) => {
+	if (!queue.currentTrack) return;
 	const requestedByText = track.requestedBy ? `<@${track.requestedBy}>` : "Desconocido";
 	let embed = new EmbedBuilder()
-		.setTitle(`Reproduciendo`)
+		.setTitle(`Cola de reproduccion`)
 		.setDescription(
 			`Se agrego a la lista de reproduccion ${track.title} en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${requestedByText}`,
 		)
@@ -149,7 +167,7 @@ player.events.on("audioTrackAdd", (queue, track) => {
 player.events.on("audioTracksAdd", (queue, tracks) => {
 	const requestedByText = tracks[0]?.requestedBy ? `<@${tracks[0].requestedBy}>` : "Desconocido";
 	let embed = new EmbedBuilder()
-		.setTitle(`Reproduciendo`)
+		.setTitle(`Cola de reproduccion`)
 		.setDescription(
 			`Se agregaron **${tracks.length}** canciones a la lista de reproduccion en el canal de voz ${queue.metadata.vc.name}.\nPedido por ${requestedByText}`,
 		)

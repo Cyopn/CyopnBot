@@ -4,8 +4,9 @@ const isPlaylistLikeQuery = (query) => {
 	const value = String(query || "").toLowerCase();
 	return (
 		(value.includes("youtube.com") && value.includes("list=")) ||
-		value.includes("spotify.com/playlist/") ||
-		value.includes("spotify.com/album/")
+		/spotify\.com\/(?:intl-[a-z]{2}(?:-[a-z]{2})?\/)?playlist\//i.test(value) ||
+		/spotify\.com\/(?:intl-[a-z]{2}(?:-[a-z]{2})?\/)?album\//i.test(value) ||
+		/spotify:(?:playlist|album):/i.test(value)
 	);
 };
 
